@@ -1,0 +1,180 @@
+/*----------------------Setting up the document-----------------------*/
+@import url("https://fonts.googleapis.com/css2?family=Special+Elite&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&display=swap");
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --background-color: #f0d9b5;
+  --background-shadow: #c8a671;
+  --typed-font: "Special Elite", cursive;
+  --box-shadow: 0.3em 0.3em 0px 0px rgba(200, 166, 113, 1);
+  --width: min(80%, 800px);
+}
+
+body {
+  background-image: url(img/brick.png);
+  background-repeat: repeat;
+  background-size: 15em;
+  font-family: "Oswald", sans-serif;
+  font-weight: 200;
+}
+
+/*----------------------Header, info-line, filters-----------------------*/
+.container-header {
+  background: var(--background-color);
+  width: fit-content;
+  margin: 2em auto;
+  box-shadow: var(--box-shadow);
+}
+
+h1 {
+  padding: 0.3em 1em;
+  font-family: var(--typed-font);
+}
+
+.container-infobar {
+  background: var(--background-color);
+  width: var(--width);
+  margin: 2em auto;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5em;
+}
+
+.container-infobar span {
+  font-family: var(--typed-font);
+}
+
+.firstLine,
+.secondLine {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2em;
+  justify-content: center;
+}
+
+.secondLine {
+  margin-bottom: 0.5em;
+  row-gap: 0.2em;
+}
+.firstLine {
+  margin-top: 0.7em;
+}
+
+.container-infobar span {
+  font-weight: 900;
+}
+
+.searchAndFilter {
+  width: var(--width);
+  margin: 0 auto 1em auto;
+  display: flex;
+  gap: 2em;
+  justify-content: center;
+  font-weight: 900;
+}
+
+/*----------------------Student List-----------------------*/
+
+.container-studentList {
+  background: var(--background-color);
+  box-shadow: var(--box-shadow);
+  width: var(--width);
+  margin: 0 auto 5em auto;
+  cursor: pointer;
+  z-index: 600;
+}
+
+.container-infoLine {
+  padding: 2em 0 2em 0;
+  margin: 0 3rem;
+  width: calc(100% - 6em);
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+#list {
+  margin: 0 3em;
+  padding-bottom: 3em;
+  width: calc(100% - 6em);
+}
+
+#sorting {
+  text-align: left;
+  font-family: var(--typed-font);
+}
+
+#sorting th {
+  border-bottom: solid rgb(0, 0, 0) 1px;
+}
+
+#list tbody tr td {
+  padding: 0.2em 0;
+}
+
+#list tbody tr:hover {
+  cursor: pointer;
+  background-color: rgba(200, 167, 113, 0.24);
+}
+
+/*----------------------Candles-----------------------*/
+/*Right now they are overlapping the student list despite trying to use z-index so I had to turn them off*/
+
+@media screen and (min-width: 1000px) {
+  .candle-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .backgroundCandles {
+    position: absolute;
+    width: min(100vw, 1100px);
+    height: 100vh;
+    top: 0;
+  }
+
+  .candle {
+    background-image: url(img/lit-candle.png);
+    background-size: 4em 8em;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .candle:nth-of-type(1) {
+    top: 50px;
+    left: 15px;
+    width: 4em;
+    height: 8em;
+    transform: rotate(2deg);
+    animation: hoverCandle1 6s infinite ease-in-out;
+  }
+
+  .candle:nth-of-type(2) {
+    top: 200px;
+    left: 75px;
+    width: 3em;
+    height: 6em;
+    background-size: 3em 6em;
+    animation: hoverCandle2 7s infinite ease;
+  }
+
+  @keyframes hoverCandle1 {
+    25% {
+      transform: translateY(10px);
+    }
+  }
+
+  @keyframes hoverCandle2 {
+    25% {
+      transform: rotate(5deg);
+    }
+    75% {
+      transform: rotate(-5deg);
+    }
+  }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Hogwarts Student List</title>
+  </head>
+  <body>
+    <div class="container-header"><h1>Hogwarts Student List</h1></div>
+    <div class="container-infobar">
+      <div class="firstLine">
+        <p>Total students: <span class="enrolledCount"></span></p>
+        <p>Expelled students: <span class="expelledCount"></span></p>
+      </div>
+      <div class="secondLine">
+        <p>Gryffindor: <span class="gryfCount"></span></p>
+        <p>Hufflepuff: <span class="huffCount"></span></p>
+        <p>Ravenclaw: <span class="raveCount"></span></p>
+        <p>Slytherin: <span class="slytCount"></span></p>
+      </div>
+    </div>
+    <div class="searchAndFilter">
+      <p class="filters">
+        Filter by:
+        <select name="house" id="selectHouse">
+          <option value="all">House</option>
+          <option value="Gryffindor">Gryffindor</option>
+          <option value="Hufflepuff">Hufflepuff</option>
+          <option value="Slytherin">Slytherin</option>
+          <option value="Ravenclaw">Ravenclaw</option>
+        </select>
+        <select name="responsibility" id="selectResponsibility">
+          <option value="all">Responsibility</option>
+          <option value="prefect">Prefects</option>
+          <option value="inquisitorial">Inquisitorial Staff</option>
+        </select>
+        <select name="bloodstatus" id="selectBloodstatus">
+          <option value="all">Bloodstatus</option>
+          <option value="fullblood">Fullblood</option>
+          <option value="halfblood">Halfblood</option>
+          <option value="muggleborn">Muggleborn</option>
+        </select>
+      </p>
+      <p>
+        Search by name:
+        <input type="text" name="search" id="search" />
+      </p>
+    </div>
+
+    <div class="container-studentList">
+      <div class="container-infoLine">
+        <p>Currently showing <span></span> students</p>
+      </div>
+      <table id="list">
+        <thead class="studentList">
+          <tr id="sorting">
+            <th class="firstName" data-action="sort" data-sort-direction="asc" data-sort="firstName">First name</th>
+            <th class="lastName" data-action="sort" data-sort-direction="asc" data-sort="lastName">Last name</th>
+            <th class="house" data-action="sort" data-sort-direction="asc" data-sort="house">House</th>
+            <th class="responsibility" data-action="sort" data-sort-direction="asc" data-sort="responsibility">Responsibilities</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- student template will be copied and inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <!-- 
+    <div class="candle-container">
+      <div class="backgroundCandles">
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+      </div>
+    </div> -->
+
+    <template id="student">
+      <tr>
+        <td data-field="firstName">Harry</td>
+        <td data-field="lastName">Potter</td>
+        <td data-field="house">Gryffindor</td>
+        <td data-field="responsibility"></td>
+      </tr>
+    </template>
+  </body>
+  <script src="script.js"></script>
+</html>
+
+<!--  -->
