@@ -122,6 +122,29 @@ h1 {
   background-color: rgba(200, 167, 113, 0.24);
 }
 
+.logo {
+  height: 25px;
+  width: 25px;
+  background-size: 25px;
+}
+
+.prefectlogo {
+  background-image: url(img/prefectlogo.png);
+}
+
+.inquisitoriallogo {
+  background-image: url(img/inquisitoriallogo.png);
+}
+
+.quidditchlogo {
+  background-image: url(img/quidditchlogo.png);
+}
+
+[data-field="responsibility"] {
+  display: flex;
+  gap: 5px;
+}
+
 /*----------------------Candles-----------------------*/
 /*Right now they are overlapping the student list despite trying to use z-index so I had to turn them off*/
 

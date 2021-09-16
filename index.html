@@ -56,10 +56,10 @@
       <table id="list">
         <thead class="studentList">
           <tr id="sorting">
-            <th class="firstName" data-action="sort" data-sort-direction="asc" data-sort="firstName">First name</th>
-            <th class="lastName" data-action="sort" data-sort-direction="asc" data-sort="lastName">Last name</th>
-            <th class="house" data-action="sort" data-sort-direction="asc" data-sort="house">House</th>
-            <th class="responsibility" data-action="sort" data-sort-direction="asc" data-sort="responsibility">Responsibilities</th>
+            <th class="firstName" data-action="sort" data-sort-direction="asc" data-sort="firstName">First name<span></span></th>
+            <th class="lastName" data-action="sort" data-sort-direction="asc" data-sort="lastName">Last name<span></span></th>
+            <th class="house" data-action="sort" data-sort-direction="asc" data-sort="house">House<span></span></th>
+            <th class="responsibility" data-action="sort" data-sort-direction="asc" data-sort="responsibility">Responsibilities<span></span></th>
           </tr>
         </thead>
         <tbody>
@@ -83,7 +83,14 @@
         <td data-field="firstName">Harry</td>
         <td data-field="lastName">Potter</td>
         <td data-field="house">Gryffindor</td>
-        <td data-field="responsibility"></td>
+        <td data-field="responsibility">
+          <div class="logo prefectLogoSpot"></div>
+          <div class="logo inquisitorialLogoSpot"></div>
+          <div class="logo quidditchLogoSpot"></div>
+          <!-- <img src="img/prefectlogo.png" alt="prefect logo" class="logo prefectlogo" />
+          <img src="img/inquisitoriallogo.png" alt="inquisitorial squad logo" class="logo inquisitoriallogo" />
+          <img src="img/quidditchlogo.png" alt="quidditch logo" class="logo quidditchlogo" /> -->
+        </td>
       </tr>
     </template>
   </body>

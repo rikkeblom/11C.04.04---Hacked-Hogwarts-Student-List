@@ -1,5 +1,6 @@
 "use strict";
 //I am currently working on sorting. Right now I have a working eventlistener that reads the searchterm and knows if the search box is empty
+//I might need to look into the sizing of everything as it is huge when uploaded to github pages
 
 window.addEventListener("DOMContentLoaded", start);
 
@@ -7,7 +8,7 @@ const studentList = [];
 const settings = {
   filter: "all",
   filterCat: "",
-  sort: "name",
+  sort: "firstName",
   sortDir: "asc",
 };
 let Student = {
@@ -18,8 +19,9 @@ let Student = {
   image: "",
   house: "",
   bloodstatus: "muggleborn",
-  prefect: false,
-  inquisitorial: false,
+  prefect: true,
+  inquisitorial: true,
+  quidditch: true,
   expelled: false,
 };
 
@@ -34,8 +36,8 @@ function start() {
   document.querySelector("#sorting .lastName").addEventListener("click", selectSort);
   document.querySelector("#sorting .house").addEventListener("click", selectSort);
   document.querySelector("#sorting .responsibility").addEventListener("click", selectSort);
-  document.querySelector("#search").addEventListener("change", search);
-  document.querySelector("#search").addEventListener("input", search);
+  document.querySelector("#search").addEventListener("change", buildList);
+  document.querySelector("#search").addEventListener("input", buildList);
 }
 
 function loadJSON() {
@@ -117,13 +119,25 @@ function filterList(student) {
 }
 
 function sortList(list) {
+  let firstNumber;
+  let secondNumber;
+
   return list.sort(sortByParam);
 
   function sortByParam(a, b) {
-    if (a[settings.sort] < b[settings.sort]) {
-      return -1;
+    if (settings.sortDir === "asc") {
+      firstNumber = 1;
+      secondNumber = -1;
+    } else {
+      firstNumber = -1;
+      secondNumber = 1;
     }
-    return 1;
+
+    if (a[settings.sort] < b[settings.sort]) {
+      return firstNumber;
+    } else {
+      return secondNumber;
+    }
   }
 }
 
@@ -151,8 +165,47 @@ function selectFilter(event) {
 
 function selectSort(event) {
   const sortBy = event.target.dataset.sort;
-  const sortDir = event.target.dataset.sortDirection;
+  let sortDir = settings.sortDir;
+  //checking if this sort was already selected, meaning it should toggle
+  if (sortBy === settings.sort) {
+    if (settings.sortDir === "asc") {
+      sortDir = "des";
+    } else {
+      sortDir = "asc";
+    }
+  }
+  // console.log(`toggle direction: ${sortDir}`);
+  // const sortDir = event.target.dataset.sortDirection;
   setSort(sortBy, sortDir);
+  toggleSort();
+}
+
+function toggleSort() {
+  // console.log(settings.sort);
+  //setting the sort direction arrow
+  if (settings.sortDir === "asc") {
+    document.querySelector(`.${settings.sort} span`).textContent = " ▲";
+  } else if (settings.sortDir === "des") {
+    document.querySelector(`.${settings.sort} span`).textContent = " ▼";
+  }
+  //removing other arrows
+  if (settings.sort === "firstName") {
+    document.querySelector(`.lastName span`).textContent = "";
+    document.querySelector(`.house span`).textContent = "";
+    document.querySelector(`.responsibility span`).textContent = "";
+  } else if (settings.sort === "lastName") {
+    document.querySelector(`.firstName span`).textContent = "";
+    document.querySelector(`.house span`).textContent = "";
+    document.querySelector(`.responsibility span`).textContent = "";
+  } else if (settings.sort === "house") {
+    document.querySelector(`.firstName span`).textContent = "";
+    document.querySelector(`.lastName span`).textContent = "";
+    document.querySelector(`.responsibility span`).textContent = "";
+  } else if (settings.sort === "responsibility") {
+    document.querySelector(`.firstName span`).textContent = "";
+    document.querySelector(`.lastName span`).textContent = "";
+    document.querySelector(`.house span`).textContent = "";
+  }
 }
 
 function setFilter(filter, filterCat) {
@@ -170,16 +223,35 @@ function setSort(sortby, sortDir) {
 function buildList() {
   const filteredList = studentList.filter(filterList);
   const sortedList = sortList(filteredList);
-  displayList(sortedList);
+  const searchedList = searchList(sortedList);
+  displayList(searchedList);
 }
 
-function search() {
-  const searchTerm = document.querySelector("#search").value;
+function searchList(list) {
+  const searchTerm = document.querySelector("#search").value.toLowerCase();
+  let listlength = list.length;
+  let searchResult = [];
+
   if (searchTerm !== "") {
     console.log("searching");
-  } else {
+    for (let i = 0; i < listlength; i++) {
+      if (list[i].firstName.toLowerCase().includes(searchTerm) === true) {
+        searchResult.push(list[i]);
+      } else if (list[i].house.toLowerCase().includes(searchTerm) === true) {
+        searchResult.push(list[i]);
+      } else if (list[i].lastName !== undefined) {
+        if (list[i].lastName.toLowerCase().includes(searchTerm) === true) {
+          searchResult.push(list[i]);
+        }
+      }
+    }
+  } else if (searchTerm === "") {
+    searchResult = list;
     console.log("stop searching");
   }
+
+  console.log(searchResult);
+  return searchResult;
 }
 
 //------------------Count Students
@@ -247,6 +319,18 @@ function displayStudent(student) {
   clone.querySelector('[data-field="firstName"]').textContent = student.firstName;
   clone.querySelector('[data-field="lastName"]').textContent = student.lastName;
   clone.querySelector('[data-field="house"]').textContent = student.house;
+
+  //responsibility icons
+  if (student.prefect === true) {
+    clone.querySelector('[data-field="responsibility"] .prefectLogoSpot').classList.add("prefectlogo");
+  }
+  if (student.inquisitorial === true) {
+    clone.querySelector('[data-field="responsibility"] .inquisitorialLogoSpot').classList.add("inquisitoriallogo");
+  }
+  if (student.quidditch === true) {
+    clone.querySelector('[data-field="responsibility"] .quidditchLogoSpot').classList.add("quidditchlogo");
+  }
+
   // append clone to list
   document.querySelector("tbody").appendChild(clone);
 }
