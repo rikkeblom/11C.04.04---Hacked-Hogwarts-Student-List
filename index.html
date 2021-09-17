@@ -8,6 +8,38 @@
     <title>Hogwarts Student List</title>
   </head>
   <body>
+    <section class="studentCard-container hidden">
+      <div class="studentCard">
+        <div class="studentCardCrest-container">
+          <div class="studentCardCrest gryfCrest"></div>
+        </div>
+        <div class="studentCardInfoLine">
+          <img src="" alt="student image" class="studentCardStudentIMG" />
+          <!-- <div class="studentCardStudentIMG"></div> -->
+          <div>
+            <p>First name: <span>Harry</span></p>
+            <p>Middle name: <span>James</span></p>
+            <p>Last name: <span>Potter</span></p>
+            <p>Nickname: <span>The boy who lived</span></p>
+            <p>bloodstatus: <span>halfblood</span></p>
+          </div>
+        </div>
+        <div class="studentEnrolment"></div>
+        <div class="studentCardResponsibilityLine">
+          <!-- This will have lines above and below -->
+          <div class="logo studentPrefectLogoSpot"></div>
+          <div class="logo studentInquisitorialLogoSpot"></div>
+          <div class="logo studentQuidditchLogoSpot"></div>
+        </div>
+        <div class="studentCardButtons">
+          <button>make prefect</button>
+          <button>make inquisitorial squad</button>
+          <button>add to quidditch team</button>
+          <button>expell from Hogwarts</button>
+        </div>
+      </div>
+    </section>
+    <div class="transparentOverlay hidden"></div>
     <div class="container-header"><h1>Hogwarts Student List</h1></div>
     <div class="container-infobar">
       <div class="firstLine">
@@ -42,6 +74,11 @@
           <option value="halfblood">Halfblood</option>
           <option value="muggleborn">Muggleborn</option>
         </select>
+        <select name="enrolment" id="selectEnrolment">
+          <option value="all">Enrolment</option>
+          <option value="enrolled">Enrolled</option>
+          <option value="expelled">Expelled</option>
+        </select>
       </p>
       <p>
         Search by name:
@@ -59,7 +96,7 @@
             <th class="firstName" data-action="sort" data-sort-direction="asc" data-sort="firstName">First name<span></span></th>
             <th class="lastName" data-action="sort" data-sort-direction="asc" data-sort="lastName">Last name<span></span></th>
             <th class="house" data-action="sort" data-sort-direction="asc" data-sort="house">House<span></span></th>
-            <th class="responsibility" data-action="sort" data-sort-direction="asc" data-sort="responsibility">Responsibilities<span></span></th>
+            <th class="responsibility" data-action="sort" data-sort-direction="asc" data-sort="responsibility">Roles<span></span></th>
           </tr>
         </thead>
         <tbody>
@@ -67,19 +104,19 @@
         </tbody>
       </table>
     </div>
-    <!-- 
+
     <div class="candle-container">
       <div class="backgroundCandles">
         <div class="candle"></div>
         <div class="candle"></div>
+        <!-- <div class="candle"></div>
         <div class="candle"></div>
-        <div class="candle"></div>
-        <div class="candle"></div>
+        <div class="candle"></div> -->
       </div>
-    </div> -->
+    </div>
 
     <template id="student">
-      <tr>
+      <tr class="fullStudent">
         <td data-field="firstName">Harry</td>
         <td data-field="lastName">Potter</td>
         <td data-field="house">Gryffindor</td>
@@ -96,5 +133,3 @@
   </body>
   <script src="script.js"></script>
 </html>
-
-<!--  -->

@@ -79,6 +79,18 @@ h1 {
   font-weight: 900;
 }
 
+select {
+  background-color: var(--background-color);
+  border: var(--background-shadow);
+  padding: 2px;
+  box-shadow: var(--box-shadow);
+  /* border-radius: 5px; */
+}
+
+select option[value="all"] {
+  background-color: var(--background-shadow);
+}
+
 /*----------------------Student List-----------------------*/
 
 .container-studentList {
@@ -140,9 +152,160 @@ h1 {
   background-image: url(img/quidditchlogo.png);
 }
 
+.prefectlogobeige {
+  background-image: url(img/prefectlogobeige.png);
+}
+
+.inquisitoriallogobeige {
+  background-image: url(img/inquisitoriallogobeige.png);
+}
+
+.quidditchlogobeige {
+  background-image: url(img/quidditchlogobeige.png);
+}
+
 [data-field="responsibility"] {
   display: flex;
   gap: 5px;
+}
+
+/*------------------Studentcard popup--------------------*/
+.studentCard-container {
+  width: 100%;
+  /* height: 500px; */
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  z-index: 10000;
+  pointer-events: none;
+}
+.studentCard {
+  width: 400px;
+  /* height: 500px; */
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  /* align-content: center; */
+  position: relative;
+  pointer-events: all;
+}
+.studentCardCrest-container {
+  display: flex;
+  justify-content: center;
+}
+
+.studentCardCrest {
+  width: 104px;
+  height: 110px;
+  background-size: 104px, 112px;
+}
+
+.gryfCrest {
+  background-image: url(img/gryffindorcrest.png);
+}
+
+.raveCrest {
+  background-image: url(img/ravenclawcrest.png);
+}
+
+.huffCrest {
+  background-image: url(img/hufflepuffcrest.png);
+}
+
+.slytCrest {
+  background-image: url(img/slytherincrest.png);
+}
+
+.studentCardInfoLine {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  gap: 2rem;
+  /* margin-left: 4rem; */
+  margin: 1rem 0;
+}
+.studentCardStudentIMG {
+  /* background-image: url(imgStudents/potter_h.png); */
+  width: 104px;
+  height: 110px;
+  /* background-size: 104px, 112px; */
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.studentCardInfoLine p {
+  font-weight: 500;
+}
+.studentCardInfoLine p span {
+  font-weight: 200;
+}
+
+.studentEnrolment {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.studentCardResponsibilityLine {
+  width: 300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  border-top: black 1px solid;
+  border-bottom: black 1px solid;
+}
+
+.studentCardButtons {
+  display: flex;
+  flex-wrap: wrap;
+  width: 350px;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem auto;
+  padding-bottom: 2rem;
+}
+
+.studentCardButtons button {
+  background-color: var(--background-shadow);
+  border: var(--background-shadow) solid 0.4rem;
+  box-shadow: 0.1em 0.1em 2px 0px rgb(168, 140, 95);
+  font-size: 0.7rem;
+}
+
+.studentCardButtons button:hover {
+  transform: scale(1.01);
+}
+
+.gryfBorder {
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(112, 37, 14) inset, -4px -4px 0px 10px rgb(112, 37, 14) inset, 10px 10px 0px 10px rgb(155, 104, 9) inset,
+    -10px -10px 0px 10px rgb(155, 104, 9) inset;
+}
+
+.huffBorder {
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(0, 0, 0) inset, -4px -4px 0px 10px rgb(0, 0, 0) inset, 10px 10px 0px 10px rgb(187, 121, 0) inset,
+    -10px -10px 0px 10px rgb(187, 121, 0) inset;
+}
+
+.slytBorder {
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(1, 82, 32) inset, -4px -4px 0px 10px rgb(1, 82, 32) inset, 10px 10px 0px 10px rgb(128, 130, 134) inset,
+    -10px -10px 0px 10px rgb(128, 130, 134) inset;
+}
+
+.raveBorder {
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(29, 2, 128) inset, -4px -4px 0px 10px rgb(29, 2, 128) inset, 10px 10px 0px 10px rgb(173, 94, 29) inset,
+    -10px -10px 0px 10px rgb(173, 94, 29) inset;
+}
+
+.transparentOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(68, 56, 56, 0.493);
 }
 
 /*----------------------Candles-----------------------*/
@@ -152,6 +315,7 @@ h1 {
   .candle-container {
     display: flex;
     justify-content: center;
+    pointer-events: none;
   }
 
   .backgroundCandles {
@@ -166,6 +330,7 @@ h1 {
     background-size: 4em 8em;
     position: relative;
     cursor: pointer;
+    pointer-events: all;
   }
 
   .candle:nth-of-type(1) {
@@ -200,4 +365,11 @@ h1 {
       transform: rotate(-5deg);
     }
   }
+}
+
+.hidden {
+  display: none;
+}
+.noScroll {
+  overflow: hidden;
 }

@@ -11,6 +11,7 @@ const settings = {
   sort: "firstName",
   sortDir: "asc",
 };
+
 let Student = {
   firstName: "",
   middleName: "",
@@ -254,6 +255,114 @@ function searchList(list) {
   return searchResult;
 }
 
+//------------------Controller: Open Student Popup
+function openStudentPopup(event) {
+  console.log("open goddammit");
+  //we know how to find the name of the student
+  console.log(event.path[1].firstElementChild.textContent);
+  //now we want to find the corresponding student in the student array
+  let showStudent;
+  studentList.forEach(function (student) {
+    if (student.firstName === event.path[1].firstElementChild.textContent) {
+      showStudent = student;
+    }
+  });
+  console.log(showStudent);
+  //grap the popup
+  const template = document.querySelector(".studentCard-container");
+
+  //change the template
+  //----set text content
+  template.querySelector(".studentCardInfoLine:nth-child(2) p span").textContent = showStudent.firstName;
+  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(2) span").textContent = showStudent.middleName;
+  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(3) span").textContent = showStudent.lastName;
+  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(4) span").textContent = showStudent.nickName;
+  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(5) span").textContent = showStudent.bloodstatus;
+
+  //----set student image
+  template.querySelector(".studentCardStudentIMG").src = `imgStudents/${showStudent.image}`;
+
+  //----find the right house crest and border colors
+  if (showStudent.house === "Gryffindor") {
+    template.querySelector(".studentCardCrest").classList.add("gryfCrest");
+    template.querySelector(".studentCard").classList.add("gryfBorder");
+    console.log("GRYFFINDOR");
+  } else if (showStudent.house === "Ravenclaw") {
+    template.querySelector(".studentCardCrest").classList.add("raveCrest");
+    template.querySelector(".studentCard").classList.add("raveBorder");
+    console.log("RAVENCLAW");
+  } else if (showStudent.house === "Hufflepuff") {
+    template.querySelector(".studentCardCrest").classList.add("huffCrest");
+    template.querySelector(".studentCard").classList.add("huffBorder");
+    console.log("HUFFLEPUFF");
+  } else if (showStudent.house === "Slytherin") {
+    template.querySelector(".studentCardCrest").classList.add("slytCrest");
+    template.querySelector(".studentCard").classList.add("slytBorder");
+    console.log("SLYTHERIN");
+  }
+
+  //----display if the student is enrolled or not
+  if (showStudent.expelled === false) {
+    template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is currently enrolled at Hogwarts`;
+  } else {
+    template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is not currently enrolled at Hogwarts`;
+  }
+
+  //----show the right icons according to their responsibilities
+  if (showStudent.prefect === true) {
+    template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
+  } else {
+    template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
+  }
+  if (showStudent.inquisitorial === true) {
+    template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
+  } else {
+    template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
+  }
+  if (showStudent.quidditch === true) {
+    template.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
+  } else {
+    template.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
+  }
+
+  //scroll to top and show the popup
+  window.scroll(0, 0);
+  template.classList.remove("hidden");
+  //add transparent background
+  document.querySelector(".transparentOverlay").classList.remove("hidden");
+  document.querySelector("body").classList.add("noScroll");
+  //add eventlisteners to close the popup
+  document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
+}
+
+function closePopup() {
+  //reapply the hidden class to remove popup from screen, and remove the noScroll class
+  document.querySelector(".transparentOverlay").classList.add("hidden");
+  document.querySelector(".studentCard-container").classList.add("hidden");
+  document.querySelector("body").classList.remove("noScroll");
+
+  //reset the template classes to avoid weirdness on future popups
+  //--Gryffindor styling
+  document.querySelector(".studentCardCrest").classList.remove("gryfCrest");
+  document.querySelector(".studentCard").classList.remove("gryfBorder");
+  //--Ravenclaw styling
+  document.querySelector(".studentCardCrest").classList.remove("raveCrest");
+  document.querySelector(".studentCard").classList.remove("raveBorder");
+  //--Slytherin styling
+  document.querySelector(".studentCardCrest").classList.remove("slytCrest");
+  document.querySelector(".studentCard").classList.remove("slytBorder");
+  //--Hufflepuff styling
+  document.querySelector(".studentCardCrest").classList.remove("huffCrest");
+  document.querySelector(".studentCard").classList.remove("huffBorder");
+  //--responsibility icons
+  document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogo");
+  document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogobeige");
+  document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogo");
+  document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogobeige");
+  document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
+  document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
+}
+
 //------------------Count Students
 
 function countGryffindors(student) {
@@ -286,6 +395,7 @@ function countSlytherins(student) {
 }
 
 //------------------View: displaying the students
+
 function setInfoLine() {
   const totalStudents = studentList.length;
   //edit when I start expelling students so it updates
@@ -330,6 +440,9 @@ function displayStudent(student) {
   if (student.quidditch === true) {
     clone.querySelector('[data-field="responsibility"] .quidditchLogoSpot').classList.add("quidditchlogo");
   }
+
+  //set eventlistener
+  clone.querySelector(".fullStudent").addEventListener("click", openStudentPopup);
 
   // append clone to list
   document.querySelector("tbody").appendChild(clone);
