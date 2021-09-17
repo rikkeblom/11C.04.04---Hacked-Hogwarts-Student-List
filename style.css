@@ -373,3 +373,6 @@ select option[value="all"] {
 .noScroll {
   overflow: hidden;
 }
+button {
+  cursor: pointer;
+}

@@ -20,9 +20,9 @@ let Student = {
   image: "",
   house: "",
   bloodstatus: "muggleborn",
-  prefect: true,
-  inquisitorial: true,
-  quidditch: true,
+  prefect: false,
+  inquisitorial: false,
+  quidditch: false,
   expelled: false,
 };
 
@@ -251,15 +251,15 @@ function searchList(list) {
     console.log("stop searching");
   }
 
-  console.log(searchResult);
+  // console.log(searchResult);
   return searchResult;
 }
 
 //------------------Controller: Open Student Popup
 function openStudentPopup(event) {
-  console.log("open goddammit");
+  // console.log("open goddammit");
   //we know how to find the name of the student
-  console.log(event.path[1].firstElementChild.textContent);
+  // console.log(event.path[1].firstElementChild.textContent);
   //now we want to find the corresponding student in the student array
   let showStudent;
   studentList.forEach(function (student) {
@@ -267,7 +267,7 @@ function openStudentPopup(event) {
       showStudent = student;
     }
   });
-  console.log(showStudent);
+  // console.log(showStudent);
   //grap the popup
   const template = document.querySelector(".studentCard-container");
 
@@ -286,19 +286,19 @@ function openStudentPopup(event) {
   if (showStudent.house === "Gryffindor") {
     template.querySelector(".studentCardCrest").classList.add("gryfCrest");
     template.querySelector(".studentCard").classList.add("gryfBorder");
-    console.log("GRYFFINDOR");
+    // console.log("GRYFFINDOR");
   } else if (showStudent.house === "Ravenclaw") {
     template.querySelector(".studentCardCrest").classList.add("raveCrest");
     template.querySelector(".studentCard").classList.add("raveBorder");
-    console.log("RAVENCLAW");
+    // console.log("RAVENCLAW");
   } else if (showStudent.house === "Hufflepuff") {
     template.querySelector(".studentCardCrest").classList.add("huffCrest");
     template.querySelector(".studentCard").classList.add("huffBorder");
-    console.log("HUFFLEPUFF");
+    // console.log("HUFFLEPUFF");
   } else if (showStudent.house === "Slytherin") {
     template.querySelector(".studentCardCrest").classList.add("slytCrest");
     template.querySelector(".studentCard").classList.add("slytBorder");
-    console.log("SLYTHERIN");
+    // console.log("SLYTHERIN");
   }
 
   //----display if the student is enrolled or not
@@ -308,11 +308,15 @@ function openStudentPopup(event) {
     template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is not currently enrolled at Hogwarts`;
   }
 
-  //----show the right icons according to their responsibilities
+  //----show the right icons according to their responsibilities and set the button for adding or removing role
   if (showStudent.prefect === true) {
     template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "remove prefect";
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
   } else {
     template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "make prefect";
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
   }
   if (showStudent.inquisitorial === true) {
     template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
@@ -331,8 +335,11 @@ function openStudentPopup(event) {
   //add transparent background
   document.querySelector(".transparentOverlay").classList.remove("hidden");
   document.querySelector("body").classList.add("noScroll");
-  //add eventlisteners to close the popup
+  //add eventlisteners
+  //---to close the popup
   document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
+  // //---to make prefect
+  // document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
 }
 
 function closePopup() {
@@ -361,6 +368,83 @@ function closePopup() {
   document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogobeige");
   document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
   document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
+}
+
+//------------------Controller: prefect
+
+function makePrefect(event) {
+  console.log(event);
+  let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  //now we want to find the corresponding student and their house in the student array
+  //so that we know which prefects to check for
+  let showStudent;
+  studentList.forEach(function (student) {
+    if (student.firstName === prefectName) {
+      showStudent = student;
+    }
+  });
+  let studentHouse = showStudent.house;
+  //checking how many prefects there are in that house
+  //--first filter for house
+  let studentsFromHouse = studentList.filter(housefilter);
+  function housefilter(student) {
+    if (student.house === studentHouse) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  console.log(`We want to make ${showStudent.firstName} from ${showStudent.house} a prefect`);
+  console.log(studentsFromHouse);
+  //--then filter the prefects within that house
+  let prefectsFromHouse = studentsFromHouse.filter(prefectFilter);
+  console.log(prefectsFromHouse);
+  function prefectFilter(student) {
+    if (student.prefect === true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  //--then I check how long the array is before we add the new prefect to make sure there is no more 1
+  let amountOfPrefects = prefectsFromHouse.length;
+  console.log(amountOfPrefects);
+
+  if (amountOfPrefects < 2) {
+    //--if there are less than 2 prefects we can make the student a prefect
+    showStudent.prefect = true;
+    //--then we style the popup
+    document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogobeige");
+    document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
+    //--and change the button accordingly
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "remove prefect";
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", makePrefect);
+    document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
+  } else {
+    console.log("too many prefects");
+    alert(`Too many prefects: ${prefectsFromHouse[0].firstName} ${prefectsFromHouse[0].lastName} and ${prefectsFromHouse[1].firstName} ${prefectsFromHouse[1].lastName} are already prefects, remove one of them to add ${showStudent.firstName}`);
+  }
+  buildList();
+}
+
+function removePrefect(event) {
+  let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  //now we want to find the corresponding student and their house in the student array
+  //so that we know which prefects to check for
+  let showStudent;
+  studentList.forEach(function (student) {
+    if (student.firstName === prefectName) {
+      showStudent = student;
+    }
+  });
+  showStudent.prefect = false;
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "make prefect";
+  document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
+  document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogo");
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", removePrefect);
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
+  //running buildlist to update the role icons
+  buildList();
 }
 
 //------------------Count Students
