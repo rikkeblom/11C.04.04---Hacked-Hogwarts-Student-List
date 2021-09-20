@@ -78,7 +78,6 @@ async function prepareStudents(jsonData) {
 
     studentList.push(student);
   });
-  console.log(studentList);
   displayList(studentList);
 }
 
@@ -376,8 +375,12 @@ function openStudentPopup(event) {
   }
   if (showStudent.inquisitorial === true) {
     template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
+    document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "remove from inquisitorial squad";
+    document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", removeInquisitorial);
   } else {
     template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
+    document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "make inquisitorial squad";
+    document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", checkInquisitorial);
   }
   if (showStudent.quidditch === true) {
     template.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
@@ -532,6 +535,71 @@ function removePrefect(event) {
   document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", removePrefect);
   document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
   //running buildlist to update the role icons
+  buildList();
+}
+
+//------------------Controller: inquisitorial squad
+function checkInquisitorial(event) {
+  console.log("make inquisitorial");
+  //find the student name:
+  let studentName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  //then find the corresponding student in the array
+  let inquisitorialStudent;
+  studentList.forEach(function (student) {
+    if (student.firstName === studentName) {
+      inquisitorialStudent = student;
+    }
+  });
+
+  //then we check if they are a: in Slytherin
+  if (inquisitorialStudent.house === "Slytherin") {
+    console.log("this student can be inquisitorial squad");
+    makeInquisitorial(inquisitorialStudent);
+  } else if (inquisitorialStudent.bloodstatus === "pureblood") {
+    console.log("this student can be inquisitorial squad");
+    makeInquisitorial(inquisitorialStudent);
+  } else {
+    console.log("HELL NO");
+  }
+  // console.log(inquisitorialStudent);
+}
+
+function makeInquisitorial(student) {
+  //we set the status in the object
+  student.inquisitorial = true;
+  console.log(student);
+  //--then we style the popup
+  document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogobeige");
+  document.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
+  //--and change the button accordingly
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "remove from inquisitorial squad";
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").removeEventListener("click", checkInquisitorial);
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", removeInquisitorial);
+  //run buildlist to update with the new icons
+  buildList();
+}
+
+function removeInquisitorial(event) {
+  console.log("remove this racist");
+  //find the student name:
+  let studentName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  //then find the corresponding student in the array
+  let inquisitorialStudent;
+  studentList.forEach(function (student) {
+    if (student.firstName === studentName) {
+      inquisitorialStudent = student;
+    }
+  });
+
+  inquisitorialStudent.inquisitorial = false;
+  //--then we style the popup
+  document.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
+  document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogo");
+  //--and change the button accordingly
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "make inquisitorial squad";
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", checkInquisitorial);
+  document.querySelector(".studentCardButtons button:nth-of-type(2)").removeEventListener("click", removeInquisitorial);
+  //run buildlist to update with the new icons
   buildList();
 }
 
