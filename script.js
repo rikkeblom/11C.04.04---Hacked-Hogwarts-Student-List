@@ -38,6 +38,7 @@ function start() {
   document.querySelector("#selectHouse").addEventListener("change", selectFilter);
   document.querySelector("#selectResponsibility").addEventListener("change", selectFilter);
   document.querySelector("#selectBloodstatus").addEventListener("change", selectFilter);
+  document.querySelector("#selectEnrolment").addEventListener("change", selectFilter);
   document.querySelector("#sorting .firstName").addEventListener("click", selectSort);
   document.querySelector("#sorting .lastName").addEventListener("click", selectSort);
   document.querySelector("#sorting .house").addEventListener("click", selectSort);
@@ -77,6 +78,7 @@ async function prepareStudents(jsonData) {
 
     studentList.push(student);
   });
+  console.log(studentList);
   displayList(studentList);
 }
 
@@ -177,21 +179,29 @@ function sortList(list) {
 
 function selectFilter(event) {
   //finding the category name of the filter used
-  // console.log(event.target.id);
+  console.log(event.target.id);
 
   const filter = document.querySelector(`#${event.target.id}`).value;
   const filterCat = event.target.id;
+  console.log(`filter: ${filter}, category: ${filterCat}`);
 
   //making sure only one filter can be used (at least for now)
   if (event.target.id === "selectHouse") {
     document.querySelector("#selectResponsibility").value = "all";
     document.querySelector("#selectBloodstatus").value = "all";
+    document.querySelector("#selectEnrolment").value = "all";
   } else if (event.target.id === "selectResponsibility") {
     document.querySelector("#selectHouse").value = "all";
     document.querySelector("#selectBloodstatus").value = "all";
+    document.querySelector("#selectEnrolment").value = "all";
   } else if (event.target.id === "selectBloodstatus") {
     document.querySelector("#selectHouse").value = "all";
     document.querySelector("#selectResponsibility").value = "all";
+    document.querySelector("#selectEnrolment").value = "all";
+  } else if (event.target.id === "selectEnrolment") {
+    document.querySelector("#selectHouse").value = "all";
+    document.querySelector("#selectResponsibility").value = "all";
+    document.querySelector("#selectBloodstatus").value = "all";
   }
 
   setFilter(filter, filterCat);
@@ -255,10 +265,20 @@ function setSort(sortby, sortDir) {
 }
 
 function buildList() {
-  const filteredList = studentList.filter(filterList);
-  const sortedList = sortList(filteredList);
-  const searchedList = searchList(sortedList);
-  displayList(searchedList);
+  if (settings.filter === "expelled") {
+    console.log("show expelled students instead");
+    console.table(expelledStudentList);
+    const filteredList = expelledStudentList.filter(filterList);
+    const sortedList = sortList(filteredList);
+    const searchedList = searchList(sortedList);
+    console.table(searchedList);
+    displayList(searchedList);
+  } else {
+    const filteredList = studentList.filter(filterList);
+    const sortedList = sortList(filteredList);
+    const searchedList = searchList(sortedList);
+    displayList(searchedList);
+  }
 }
 
 function searchList(list) {
@@ -290,7 +310,6 @@ function searchList(list) {
 
 //------------------Controller: Open Student Popup
 function openStudentPopup(event) {
-  // console.log("open goddammit");
   //we know how to find the name of the student
   // console.log(event.path[1].firstElementChild.textContent);
   //now we want to find the corresponding student in the student array
@@ -300,7 +319,7 @@ function openStudentPopup(event) {
       showStudent = student;
     }
   });
-  // console.log(showStudent);
+
   //grap the popup
   const template = document.querySelector(".studentCard-container");
 
@@ -337,8 +356,12 @@ function openStudentPopup(event) {
   //----display if the student is enrolled or not
   if (showStudent.expelled === false) {
     template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is currently enrolled at Hogwarts`;
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "expell student";
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").addEventListener("click", expellStudent);
   } else {
     template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is not currently enrolled at Hogwarts`;
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "student is already expelled";
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").removeEventListener("click", expellStudent);
   }
 
   //----show the right icons according to their responsibilities and set the button for adding or removing role
@@ -372,7 +395,6 @@ function openStudentPopup(event) {
   //---to close the popup
   document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
   //---to expell the student
-  document.querySelector(".studentCardButtons button:nth-of-type(4)").addEventListener("click", expellStudent);
 }
 
 function closePopup() {
@@ -425,7 +447,7 @@ function expellStudent(event) {
   console.log(findExpelled);
   //removing that student from the student list
   studentList.splice(index, 1);
-  console.table(studentList);
+  // console.table(studentList);
   //adding that student to the expelled student list
   expelledStudentList.push(findExpelled);
   //removing eventlistener and changing button
@@ -547,10 +569,9 @@ function countSlytherins(student) {
 //------------------View: displaying the students
 
 function setInfoLine() {
-  const totalStudents = studentList.length;
   //edit when I start expelling students so it updates
-  const expelledStudents = 0;
-  const enrolledStudents = totalStudents - expelledStudents;
+  const expelledStudents = expelledStudentList.length;
+  const enrolledStudents = studentList.length;
 
   document.querySelector(".enrolledCount").textContent = enrolledStudents;
   document.querySelector(".expelledCount").textContent = expelledStudents;
@@ -689,13 +710,13 @@ function decideBlood(lastName) {
   let result;
   if (bloodList.half.includes(lastName) === true) {
     // console.log("halfblood");
-    result = "Halfblood";
+    result = "halfblood";
   } else if (bloodList.pure.includes(lastName) === true) {
     // console.log("pureblood");
-    result = "Pureblood";
+    result = "pureblood";
   } else {
     // console.log("muggleborn");
-    result = "Muggleborn";
+    result = "muggleborn";
   }
   // console.log(result);
   return result;
