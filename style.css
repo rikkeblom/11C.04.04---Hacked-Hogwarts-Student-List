@@ -283,8 +283,8 @@ input {
 }
 
 .gryfBorder {
-  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(112, 37, 14) inset, -4px -4px 0px 10px rgb(112, 37, 14) inset, 10px 10px 0px 10px rgb(155, 104, 9) inset,
-    -10px -10px 0px 10px rgb(155, 104, 9) inset;
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(160, 35, 0) inset, -4px -4px 0px 10px rgb(160, 35, 0) inset, 10px 10px 0px 10px rgb(230, 113, 17) inset,
+    -10px -10px 0px 10px rgb(230, 113, 17) inset;
 }
 
 .huffBorder {
@@ -293,7 +293,7 @@ input {
 }
 
 .slytBorder {
-  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(1, 82, 32) inset, -4px -4px 0px 10px rgb(1, 82, 32) inset, 10px 10px 0px 10px rgb(128, 130, 134) inset,
+  box-shadow: var(--box-shadow), 2px 2px 0px 5px #f0d9b5 inset, -2px -2px 0px 5px #f0d9b5 inset, 4px 4px 0px 10px rgb(22, 110, 10) inset, -4px -4px 0px 10px rgb(22, 110, 10) inset, 10px 10px 0px 10px rgb(128, 130, 134) inset,
     -10px -10px 0px 10px rgb(128, 130, 134) inset;
 }
 
@@ -354,6 +354,33 @@ input {
     height: 6em;
     background-size: 3em 6em;
     animation: hoverCandle2 7s infinite ease;
+  }
+
+  .candle:nth-of-type(3) {
+    top: 150px;
+    right: -1050px;
+    width: 4em;
+    height: 6em;
+    background-size: 4em 6em;
+    animation: hoverCandle1 9s infinite ease;
+  }
+
+  .candle:nth-of-type(4) {
+    top: -200px;
+    right: -990px;
+    width: 4em;
+    height: 8em;
+    background-size: 4em 8em;
+    animation: hoverCandle2 9s infinite ease;
+  }
+
+  .candle:nth-of-type(5) {
+    top: 00px;
+    left: 0px;
+    width: 4em;
+    height: 8em;
+    background-size: 4em 8em;
+    animation: hoverCandle1 9s infinite ease;
   }
 
   @keyframes hoverCandle1 {
