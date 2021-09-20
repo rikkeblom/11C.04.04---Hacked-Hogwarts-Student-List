@@ -12,7 +12,7 @@ const settings = {
   sort: "firstName",
   sortDir: "asc",
 };
-let bloodList = {
+const bloodList = {
   pure: "",
   half: "",
 };
@@ -559,6 +559,7 @@ function checkInquisitorial(event) {
     console.log("this student can be inquisitorial squad");
     makeInquisitorial(inquisitorialStudent);
   } else {
+    alert("This student is not qualified to be part of the inquisitorial squad");
     console.log("HELL NO");
   }
   // console.log(inquisitorialStudent);
