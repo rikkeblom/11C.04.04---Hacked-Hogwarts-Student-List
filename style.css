@@ -91,6 +91,11 @@ select option[value="all"] {
   background-color: var(--background-shadow);
 }
 
+input {
+  box-shadow: var(--box-shadow);
+  border: var(--background-shadow);
+}
+
 /*----------------------Student List-----------------------*/
 
 .container-studentList {
