@@ -18,7 +18,7 @@ const bloodList = {
   pure: "",
   half: "",
 };
-let Student = {
+const Student = {
   firstName: "",
   middleName: "",
   lastName: "",
@@ -88,7 +88,7 @@ async function prepareStudents(jsonData) {
   displayList(studentList);
 }
 
-//------------------candles
+//------------------candles and hacking
 function toggleCandle(event) {
   //find which candle it is based on the classlist id (c1/c2/c3/c4/c5)
   // console.log(event.path[0].classList[1]);
@@ -107,7 +107,7 @@ function toggleCandle(event) {
         if (document.querySelector(`.candle.c4`).classList[2] === "lit") {
           if (document.querySelector(`.candle.c5`).classList[2] === "unlit") {
             //if it is then we call the hacking function
-            hackHogwarts();
+            hackTheSystem();
           }
         }
       }
@@ -115,12 +115,41 @@ function toggleCandle(event) {
   }
 }
 
-function hackHogwarts() {
+async function hackTheSystem() {
   //first we checked if the system has already been hacked since we only want to do this once
   if (settings.hacked === false) {
     settings.hacked = true;
     console.log("HACK HOGWARTS");
+    //then we add me to the student list
+    await addMe();
+    //randomize blood
+    studentList.forEach(function (student) {
+      console.log(`${student.firstName} was originally ${student.bloodstatus}`);
+      if (student.bloodstatus === "muggleborn") {
+        student.bloodstatus = "pureblood";
+      } else if (student.bloodstatus === "halfblood") {
+        student.bloodstatus = "pureblood";
+      } else if (student.bloodstatus === "pureblood") {
+        student.bloodstatus = randomBlood();
+      }
+      console.log(`now they are ${student.bloodstatus}`);
+    });
+    buildList();
   }
+}
+
+async function addMe() {
+  const student = Object.create(Student);
+  student.firstName = "Rikke";
+  student.lastName = "Thøgersen";
+  student.middleName = "Blom";
+  student.nickName = "Flils";
+  student.image = "../img/me.png";
+  student.house = "Hufflepuff";
+  student.bloodstatus = "muggleborn";
+
+  studentList.push(student);
+  // buildList();
 }
 
 //------------------filter and sort the list + search
@@ -251,19 +280,12 @@ function toggleSort() {
   if (settings.sort === "firstName") {
     document.querySelector(`.lastName span`).textContent = "";
     document.querySelector(`.house span`).textContent = "";
-    document.querySelector(`.responsibility span`).textContent = "";
   } else if (settings.sort === "lastName") {
     document.querySelector(`.firstName span`).textContent = "";
     document.querySelector(`.house span`).textContent = "";
-    document.querySelector(`.responsibility span`).textContent = "";
   } else if (settings.sort === "house") {
     document.querySelector(`.firstName span`).textContent = "";
     document.querySelector(`.lastName span`).textContent = "";
-    document.querySelector(`.responsibility span`).textContent = "";
-  } else if (settings.sort === "responsibility") {
-    document.querySelector(`.firstName span`).textContent = "";
-    document.querySelector(`.lastName span`).textContent = "";
-    document.querySelector(`.house span`).textContent = "";
   }
 }
 
@@ -291,12 +313,25 @@ function buildList() {
   } else {
     array = studentList;
   }
+
   //applying the chosen filters, sorting methods and search parameters to the chosen list
   const filteredList = array.filter(filterList);
   const sortedList = sortList(filteredList);
   const searchedList = searchList(sortedList);
   //sending the final list to the display function
   displayList(searchedList);
+}
+
+function randomBlood() {
+  let result = Math.floor(Math.random() * 3);
+  console.log(result);
+  if (result === 0) {
+    return "muggleborn";
+  } else if (result === 1) {
+    return "halfblood";
+  } else if (result === 2) {
+    return "pureblood";
+  }
 }
 
 function searchList(list) {
@@ -478,23 +513,28 @@ function findStudent(firstname) {
 
 function expellStudent(event) {
   //sending the name to another function to get the full student object
-  const findExpelled = findStudent(event.path[2].querySelector(".studentCardInfoLine p span").textContent);
-  //finding that students index in the array
-  const index = studentList.indexOf(findExpelled);
-  //setting the student expelled as true
-  findExpelled.expelled = true;
-  //styling the open student popup
-  document.querySelector(".studentEnrolment").textContent = `${findExpelled.firstName} is not currently enrolled at Hogwarts`;
-  //removing that student from the student list
-  studentList.splice(index, 1);
-  //adding that student to the expelled student list
-  expelledStudentList.push(findExpelled);
-  //removing eventlistener and changing button
-  document.querySelector(".studentCardButtons button:nth-of-type(4)").removeEventListener("click", expellStudent);
-  document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "student is already expelled";
-  document.querySelector(".studentCardButtons button:nth-of-type(4):hover").style.transform = "scale(1)";
-  //rebuilding this student list without the student
-  buildList();
+  const name = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  if (name === "Rikke") {
+    alert("No way - you can never expel me");
+  } else {
+    const findExpelled = findStudent(name);
+    //finding that students index in the array
+    const index = studentList.indexOf(findExpelled);
+    //setting the student expelled as true
+    findExpelled.expelled = true;
+    //styling the open student popup
+    document.querySelector(".studentEnrolment").textContent = `${findExpelled.firstName} is not currently enrolled at Hogwarts`;
+    //removing that student from the student list
+    studentList.splice(index, 1);
+    //adding that student to the expelled student list
+    expelledStudentList.push(findExpelled);
+    //removing eventlistener and changing button
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").removeEventListener("click", expellStudent);
+    document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "student is already expelled";
+    document.querySelector(".studentCardButtons button:nth-of-type(4):hover").style.transform = "scale(1)";
+    //rebuilding this student list without the student
+    buildList();
+  }
 }
 
 //------------------prefects
@@ -572,17 +612,17 @@ function checkInquisitorial(event) {
 
   //then we check if they are a: in Slytherin
   if (inquisitorialStudent.house === "Slytherin") {
-    makeInquisitorial(inquisitorialStudent);
+    makeInquisitorial(inquisitorialStudent, event);
   } else if (inquisitorialStudent.bloodstatus === "pureblood") {
     //or b: a pureblood
-    makeInquisitorial(inquisitorialStudent);
+    makeInquisitorial(inquisitorialStudent, event);
   } else {
     //if they are neither we deny their request
     alert(`${studentName} is not qualified to be part of the inquisitorial squad. Only purebloods and Slytherins are accepted.`);
   }
 }
 
-function makeInquisitorial(student) {
+function makeInquisitorial(student, event) {
   //we set the status in the object
   student.inquisitorial = true;
   console.log(student);
@@ -595,6 +635,14 @@ function makeInquisitorial(student) {
   document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", removeInquisitorial);
   //run buildlist to update with the new icons
   buildList();
+  //now we check to see if the system has been hacked
+  //if it has we want to set a timer to remove the student from the role again
+  if (settings.hacked === true) {
+    setTimeout(function () {
+      alert("We don't like racists");
+      removeInquisitorial(event);
+    }, 5000);
+  }
 }
 
 function removeInquisitorial(event) {
