@@ -104,7 +104,6 @@ input {
   width: var(--width);
   margin: 0 auto 5em auto;
   cursor: pointer;
-  z-index: 600;
 }
 
 .container-infoLine {
@@ -181,7 +180,7 @@ input {
   position: absolute;
   display: flex;
   justify-content: center;
-  z-index: 10000;
+  z-index: 2;
   pointer-events: none;
 }
 .studentCard {
@@ -311,6 +310,64 @@ input {
   width: 100%;
   height: 100%;
   background-color: rgba(68, 56, 56, 0.493);
+}
+
+/*---------------------Prefect Modal----------------------*/
+.prefectModal-container {
+  position: absolute;
+  margin-top: 5rem;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.prefectModal {
+  background-color: var(--background-color);
+  border: red solid 3px;
+  box-shadow: var(--box-shadow);
+  width: 30rem;
+  height: 15rem;
+  padding: 2rem;
+  z-index: 3;
+}
+
+.prefectModal h2,
+.prefectModal p:nth-of-type(1),
+.prefectModal p:nth-of-type(2) {
+  text-align: center;
+}
+
+.prefectModal h2 {
+  color: red;
+}
+
+.prefectModal p:nth-of-type(1) {
+  font-weight: 400;
+}
+
+.prefectModal button {
+  margin-top: 1rem;
+  background-color: var(--background-shadow);
+  border: var(--background-shadow) solid 0.4rem;
+  box-shadow: 0.1em 0.1em 2px 0px rgb(168, 140, 95);
+  font-size: 0.7rem;
+}
+
+.prefectModal button:hover {
+  transform: scale(1.01);
+}
+
+.prefectModal div {
+  display: flex;
+  flex-direction: column;
+}
+
+.closeModal {
+  height: 1.5rem;
+  position: absolute;
+  transform: translate(25rem, -0.9rem);
 }
 
 /*----------------------Candles-----------------------*/

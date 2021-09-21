@@ -582,9 +582,31 @@ function makePrefect(event) {
   } else {
     //--if the student can't be a prefect we let the user know with an alert telling them to remove one of the other prefects
     console.log("too many prefects");
-    alert(`Too many prefects: ${prefectsFromHouse[0].firstName} ${prefectsFromHouse[0].lastName} and ${prefectsFromHouse[1].firstName} ${prefectsFromHouse[1].lastName} are already prefects, remove one of them to add ${showStudent.firstName}`);
+    prefectModal(prefectsFromHouse, showStudent);
+    // alert(`Too many prefects: ${prefectsFromHouse[0].firstName} ${prefectsFromHouse[0].lastName} and ${prefectsFromHouse[1].firstName} ${prefectsFromHouse[1].lastName} are already prefects, remove one of them to add ${showStudent.firstName}`);
   }
   buildList();
+}
+
+function prefectModal(currentPrefects, student) {
+  //show the modal
+  document.querySelector(".prefectModal-container").classList.remove("hidden");
+  //style the modal
+  document.querySelector(".prefectModal p:nth-of-type(2) span").textContent = student.firstName;
+  document.querySelector(".prefectModal button:nth-of-type(1) span").textContent = currentPrefects[0].firstName;
+  document.querySelector(".prefectModal button:nth-of-type(2) span").textContent = currentPrefects[1].firstName;
+  //set event listeners for closing the modal and for removing the two other prefects
+  document.querySelector(".prefectModal img").addEventListener("click", closePrefectModal);
+  document.querySelector(".prefectModal button:nth-of-type(1) ").addEventListener("click", removePrefectFromModal);
+  document.querySelector(".prefectModal button:nth-of-type(2) ").addEventListener("click", removePrefectFromModal);
+
+  console.log(`The current prefects are: ${currentPrefects[0].firstName} ${currentPrefects[0].lastName} and ${currentPrefects[1].firstName} ${currentPrefects[1].lastName}`);
+}
+
+function closePrefectModal() {
+  console.log("close modal");
+  //hide the modal
+  document.querySelector(".prefectModal-container").classList.add("hidden");
 }
 
 function removePrefect(event) {
@@ -598,6 +620,30 @@ function removePrefect(event) {
   document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogo");
   document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", removePrefect);
   document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
+  //running buildlist to update the role icons
+  buildList();
+}
+
+function removePrefectFromModal(event) {
+  //finding the student name from the button
+  // console.log(event.path[0].children[0].textContent);
+  let removeStudent = findStudent(event.path[0].children[0].textContent);
+  removeStudent.prefect = false;
+
+  //styling the student popup:
+  document.querySelector(".studentPrefectLogoSpot").classList.remove("prefectlogobeige");
+  document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
+  //--and change the button accordingly
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "remove prefect";
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", makePrefect);
+  document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
+
+  //finding the student that should be added instead
+  // console.log(event.path[2].children[3].children[0].textContent);
+  let newPrefect = findStudent(event.path[2].children[3].children[0].textContent);
+  newPrefect.prefect = true;
+  //close the modal
+  closePrefectModal();
   //running buildlist to update the role icons
   buildList();
 }

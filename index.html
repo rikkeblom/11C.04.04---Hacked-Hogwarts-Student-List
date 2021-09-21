@@ -8,6 +8,18 @@
     <title>Hogwarts Student List</title>
   </head>
   <body>
+    <section class="prefectModal-container hidden">
+      <div class="prefectModal">
+        <img class="closeModal" src="img/cross.png" alt="cross" />
+        <h2>REQUEST DENIED</h2>
+        <p>Each house can only have 2 prefects.</p>
+        <p>Remove one of the current prefects to add <span>NAME</span></p>
+        <div>
+          <button>Remove <span>Prefect Name1</span></button> <button>Remove <span>Prefect Name1</span></button>
+        </div>
+      </div>
+    </section>
+
     <section class="studentCard-container hidden">
       <div class="studentCard">
         <div class="studentCardCrest-container">
@@ -15,7 +27,6 @@
         </div>
         <div class="studentCardInfoLine">
           <img src="" alt="student image" class="studentCardStudentIMG" />
-          <!-- <div class="studentCardStudentIMG"></div> -->
           <div>
             <p>First name: <span>Harry</span></p>
             <p>Middle name: <span>James</span></p>
@@ -39,8 +50,11 @@
         </div>
       </div>
     </section>
+
     <div class="transparentOverlay hidden"></div>
+
     <div class="container-header"><h1>Hogwarts Student List</h1></div>
+
     <div class="container-infobar">
       <div class="firstLine">
         <p>Total students: <span class="enrolledCount"></span></p>
@@ -53,6 +67,7 @@
         <p>Slytherin: <span class="slytCount"></span></p>
       </div>
     </div>
+
     <div class="searchAndFilter">
       <p class="filters">
         Filter by:
