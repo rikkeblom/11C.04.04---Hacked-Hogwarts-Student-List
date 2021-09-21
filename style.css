@@ -331,11 +331,18 @@ input {
   }
 
   .candle {
-    background-image: url(img/lit-candle.png);
     background-size: 4em 8em;
     position: relative;
     cursor: pointer;
     pointer-events: all;
+  }
+
+  .lit {
+    background-image: url(img/lit-candle.png);
+  }
+
+  .unlit {
+    background-image: url(img/unlit-candle.png);
   }
 
   .candle:nth-of-type(1) {

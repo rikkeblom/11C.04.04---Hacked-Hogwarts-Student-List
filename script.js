@@ -4,6 +4,7 @@
 
 window.addEventListener("DOMContentLoaded", start);
 
+//-------------------Global objects and arrays
 const studentList = [];
 const expelledStudentList = [];
 const settings = {
@@ -11,12 +12,12 @@ const settings = {
   filterCat: "",
   sort: "firstName",
   sortDir: "asc",
+  hacked: false,
 };
 const bloodList = {
   pure: "",
   half: "",
 };
-
 let Student = {
   firstName: "",
   middleName: "",
@@ -31,6 +32,8 @@ let Student = {
   expelled: false,
 };
 
+//-------------------Initial functions
+
 function start() {
   console.log("start()");
   loadJSON();
@@ -44,6 +47,11 @@ function start() {
   document.querySelector("#sorting .house").addEventListener("click", selectSort);
   document.querySelector("#search").addEventListener("change", buildList);
   document.querySelector("#search").addEventListener("input", buildList);
+  document.querySelector(".candle.c1").addEventListener("click", toggleCandle);
+  document.querySelector(".candle.c2").addEventListener("click", toggleCandle);
+  document.querySelector(".candle.c3").addEventListener("click", toggleCandle);
+  document.querySelector(".candle.c4").addEventListener("click", toggleCandle);
+  document.querySelector(".candle.c5").addEventListener("click", toggleCandle);
 }
 
 function loadJSON() {
@@ -80,7 +88,42 @@ async function prepareStudents(jsonData) {
   displayList(studentList);
 }
 
-//------------------Controller: filter and sort the list + search
+//------------------candles
+function toggleCandle(event) {
+  //find which candle it is based on the classlist id (c1/c2/c3/c4/c5)
+  // console.log(event.path[0].classList[1]);
+  //then check if the candle is currently lit or unlit and toggle it
+  if (event.path[0].classList[2] === "lit") {
+    document.querySelector(`.candle.${event.path[0].classList[1]}`).classList.add("unlit");
+    document.querySelector(`.candle.${event.path[0].classList[1]}`).classList.remove("lit");
+  } else {
+    document.querySelector(`.candle.${event.path[0].classList[1]}`).classList.remove("unlit");
+    document.querySelector(`.candle.${event.path[0].classList[1]}`).classList.add("lit");
+  }
+  //then we check if the secret hacking code has been entered
+  if (document.querySelector(`.candle.c1`).classList[2] === "unlit") {
+    if (document.querySelector(`.candle.c2`).classList[2] === "lit") {
+      if (document.querySelector(`.candle.c3`).classList[2] === "lit") {
+        if (document.querySelector(`.candle.c4`).classList[2] === "lit") {
+          if (document.querySelector(`.candle.c5`).classList[2] === "unlit") {
+            //if it is then we call the hacking function
+            hackHogwarts();
+          }
+        }
+      }
+    }
+  }
+}
+
+function hackHogwarts() {
+  //first we checked if the system has already been hacked since we only want to do this once
+  if (settings.hacked === false) {
+    settings.hacked = true;
+    console.log("HACK HOGWARTS");
+  }
+}
+
+//------------------filter and sort the list + search
 
 function filterList(student) {
   if (settings.filterCat === "selectHouse") {
@@ -288,6 +331,33 @@ function searchList(list) {
 }
 
 //------------------Student Popup
+function openStudentPopup(event) {
+  //we know how to find the name of the student
+  // console.log(event.path[1].firstElementChild.textContent);
+  //now we want to find the corresponding student in the student array
+  let showStudent = findStudent(event.path[1].firstElementChild.textContent);
+
+  //change the content of the popup
+  //----set text content
+  setTextContentPopup(showStudent);
+  //----set student image
+  document.querySelector(".studentCardStudentIMG").src = `imgStudents/${showStudent.image}`;
+  //----find and apply the right house crest and border colors
+  setHouseStyling(showStudent);
+  //----display if the student is enrolled or not
+  setEnrolmentStatus(showStudent);
+  //----show the right icons according to their responsibilities and set the button for adding or removing role
+  setResponsibilityIconsPopup(showStudent);
+  //scroll to top and show the popup
+  window.scroll(0, 0);
+  document.querySelector(".studentCard-container").classList.remove("hidden");
+  //add transparent background
+  document.querySelector(".transparentOverlay").classList.remove("hidden");
+  document.querySelector("body").classList.add("noScroll");
+  //add eventlistener to close the popup
+  document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
+}
+
 function setTextContentPopup(showStudent) {
   document.querySelector(".studentCardInfoLine:nth-child(2) p span").textContent = showStudent.firstName;
   document.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(2) span").textContent = showStudent.middleName;
@@ -354,33 +424,6 @@ function setResponsibilityIconsPopup(showStudent) {
   }
 }
 
-function openStudentPopup(event) {
-  //we know how to find the name of the student
-  // console.log(event.path[1].firstElementChild.textContent);
-  //now we want to find the corresponding student in the student array
-  let showStudent = findStudent(event.path[1].firstElementChild.textContent);
-
-  //change the content of the popup
-  //----set text content
-  setTextContentPopup(showStudent);
-  //----set student image
-  document.querySelector(".studentCardStudentIMG").src = `imgStudents/${showStudent.image}`;
-  //----find and apply the right house crest and border colors
-  setHouseStyling(showStudent);
-  //----display if the student is enrolled or not
-  setEnrolmentStatus(showStudent);
-  //----show the right icons according to their responsibilities and set the button for adding or removing role
-  setResponsibilityIconsPopup(showStudent);
-  //scroll to top and show the popup
-  window.scroll(0, 0);
-  document.querySelector(".studentCard-container").classList.remove("hidden");
-  //add transparent background
-  document.querySelector(".transparentOverlay").classList.remove("hidden");
-  document.querySelector("body").classList.add("noScroll");
-  //add eventlistener to close the popup
-  document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
-}
-
 function resetPopupVisuals() {
   //reset the template classes to avoid weirdness on future popups
   //--Gryffindor styling
@@ -414,15 +457,24 @@ function closePopup() {
 
 function findStudent(firstname) {
   let studentObject;
-  studentList.forEach(function (student) {
+  let array;
+  //first we check which student list we should loop through to find the student
+  if (settings.filter === "expelled") {
+    array = expelledStudentList;
+  } else {
+    array = studentList;
+  }
+  //then we loop through the data until we find the name
+  array.forEach(function (student) {
     if (student.firstName === firstname) {
       studentObject = student;
     }
   });
+  //and lastly we return the student object
   return studentObject;
 }
 
-//------------------Model: expelling students
+//------------------expelling students
 
 function expellStudent(event) {
   //sending the name to another function to get the full student object
@@ -445,7 +497,7 @@ function expellStudent(event) {
   buildList();
 }
 
-//------------------Controller: prefect
+//------------------prefects
 
 function makePrefect(event) {
   //first we find the name of the student through the event
@@ -510,7 +562,7 @@ function removePrefect(event) {
   buildList();
 }
 
-//------------------Controller: inquisitorial squad
+//------------------inquisitorial squad
 function checkInquisitorial(event) {
   console.log("make inquisitorial");
   //find the student name:
@@ -520,16 +572,14 @@ function checkInquisitorial(event) {
 
   //then we check if they are a: in Slytherin
   if (inquisitorialStudent.house === "Slytherin") {
-    console.log("this student can be inquisitorial squad");
     makeInquisitorial(inquisitorialStudent);
   } else if (inquisitorialStudent.bloodstatus === "pureblood") {
-    console.log("this student can be inquisitorial squad");
+    //or b: a pureblood
     makeInquisitorial(inquisitorialStudent);
   } else {
-    alert("This student is not qualified to be part of the inquisitorial squad");
-    console.log("HELL NO");
+    //if they are neither we deny their request
+    alert(`${studentName} is not qualified to be part of the inquisitorial squad. Only purebloods and Slytherins are accepted.`);
   }
-  // console.log(inquisitorialStudent);
 }
 
 function makeInquisitorial(student) {
@@ -566,7 +616,7 @@ function removeInquisitorial(event) {
   buildList();
 }
 
-//------------------Model? Count Students
+//------------------Count Students
 
 function countGryffindors(student) {
   if (student.house === "Gryffindor") {
@@ -597,7 +647,7 @@ function countSlytherins(student) {
   }
 }
 
-//------------------View: displaying the students
+//------------------Displaying the students
 
 function setInfoLine() {
   //edit when I start expelling students so it updates
@@ -650,7 +700,7 @@ function displayStudent(student) {
   document.querySelector("tbody").appendChild(clone);
 }
 
-//------------------Model: cleaning the data
+//------------------Cleaning the data
 
 function getFirstName(fullname) {
   if (fullname.includes(" ") == true) {
@@ -727,7 +777,7 @@ function cleanName(name) {
   return cleanName;
 }
 
-//------------------Model: determine blood status
+//------------------Determine blood status
 
 async function getBloodStatusList() {
   await fetch("https://petlatkea.dk/2021/hogwarts/families.json")
