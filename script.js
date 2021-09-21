@@ -34,7 +34,7 @@ let Student = {
 function start() {
   console.log("start()");
   loadJSON();
-
+  //setting event listeners
   document.querySelector("#selectHouse").addEventListener("change", selectFilter);
   document.querySelector("#selectResponsibility").addEventListener("change", selectFilter);
   document.querySelector("#selectBloodstatus").addEventListener("change", selectFilter);
@@ -42,7 +42,6 @@ function start() {
   document.querySelector("#sorting .firstName").addEventListener("click", selectSort);
   document.querySelector("#sorting .lastName").addEventListener("click", selectSort);
   document.querySelector("#sorting .house").addEventListener("click", selectSort);
-  document.querySelector("#sorting .responsibility").addEventListener("click", selectSort);
   document.querySelector("#search").addEventListener("change", buildList);
   document.querySelector("#search").addEventListener("input", buildList);
 }
@@ -131,60 +130,33 @@ function filterList(student) {
 function sortList(list) {
   let firstNumber;
   let secondNumber;
-  if (settings.sort === "responsibility") {
-    //I've made this one difficult for myself by using icons
-    //I need a way to translate the icons into their
-    //this will only have a value if the student has the prefect logo
-    // document.querySelector("td:last-of-type div:nth-of-type(1)").classList[2])
-    // let result = list.sort(function sortByRespons(a, b) {
-    //   a = a.querySelector("td:last-of-type div:nth-of-type(1)").classList[2].getAttribute(value);
-    //   b = b.getAttribute(value);
-    //   //first we check what direction we should sort in
-    //   if (settings.sortDir === "asc") {
-    //     firstNumber = 1;
-    //     secondNumber = -1;
-    //   } else {
-    //     firstNumber = -1;
-    //     secondNumber = 1;
-    //   }
-    //   //then we sort the student.the sort param
-    //   if (a.inquisitorial < b.inquisitorial) {
-    //     return firstNumber;
-    //   } else {
-    //     return secondNumber;
-    //   }
-    // });
-    return list;
-  } else {
-    return list.sort(sortByParam);
 
-    function sortByParam(a, b) {
-      if (settings.sortDir === "asc") {
-        firstNumber = 1;
-        secondNumber = -1;
-      } else {
-        firstNumber = -1;
-        secondNumber = 1;
-      }
+  return list.sort(sortByParam);
 
-      if (a[settings.sort] < b[settings.sort]) {
-        return firstNumber;
-      } else {
-        return secondNumber;
-      }
+  function sortByParam(a, b) {
+    if (settings.sortDir === "asc") {
+      firstNumber = 1;
+      secondNumber = -1;
+    } else {
+      firstNumber = -1;
+      secondNumber = 1;
+    }
+
+    if (a[settings.sort] < b[settings.sort]) {
+      return firstNumber;
+    } else {
+      return secondNumber;
     }
   }
 }
 
 function selectFilter(event) {
   //finding the category name of the filter used
-  console.log(event.target.id);
-
   const filter = document.querySelector(`#${event.target.id}`).value;
   const filterCat = event.target.id;
   console.log(`filter: ${filter}, category: ${filterCat}`);
 
-  //making sure only one filter can be used (at least for now)
+  //making sure only one filter can be used at a time (at least for now)
   if (event.target.id === "selectHouse") {
     document.querySelector("#selectResponsibility").value = "all";
     document.querySelector("#selectBloodstatus").value = "all";
@@ -203,10 +175,12 @@ function selectFilter(event) {
     document.querySelector("#selectBloodstatus").value = "all";
   }
 
+  //then we send that data to another function that adjust the global object "settings"
   setFilter(filter, filterCat);
 }
 
 function selectSort(event) {
+  //finding the sorting method and sorting direction
   const sortBy = event.target.dataset.sort;
   let sortDir = settings.sortDir;
   //checking if this sort was already selected, meaning it should toggle
@@ -217,14 +191,13 @@ function selectSort(event) {
       sortDir = "asc";
     }
   }
-  // console.log(`toggle direction: ${sortDir}`);
-  // const sortDir = event.target.dataset.sortDirection;
+  //sending that info to another function that adjusts the global object "settings"
   setSort(sortBy, sortDir);
+  //running another function that adjusts the sorting direction arrow in the display
   toggleSort();
 }
 
 function toggleSort() {
-  // console.log(settings.sort);
   //setting the sort direction arrow
   if (settings.sortDir === "asc") {
     document.querySelector(`.${settings.sort} span`).textContent = " ▲";
@@ -252,41 +225,50 @@ function toggleSort() {
 }
 
 function setFilter(filter, filterCat) {
+  //updating the global object "settings" with new filter choices
   settings.filter = filter;
   settings.filterCat = filterCat;
+  //calling the build list to start applying the new filter to the student array
   buildList();
 }
 
 function setSort(sortby, sortDir) {
+  //updating the global object "settings" with new sorting choices
   settings.sort = sortby;
   settings.sortDir = sortDir;
+  //calling the build list to start applying the new sorting method to the student array
   buildList();
 }
 
 function buildList() {
+  //determine if we should display the enrolled or the expelled students
+  let array;
   if (settings.filter === "expelled") {
-    console.log("show expelled students instead");
-    console.table(expelledStudentList);
-    const filteredList = expelledStudentList.filter(filterList);
-    const sortedList = sortList(filteredList);
-    const searchedList = searchList(sortedList);
-    console.table(searchedList);
-    displayList(searchedList);
+    array = expelledStudentList;
   } else {
-    const filteredList = studentList.filter(filterList);
-    const sortedList = sortList(filteredList);
-    const searchedList = searchList(sortedList);
-    displayList(searchedList);
+    array = studentList;
   }
+  //applying the chosen filters, sorting methods and search parameters to the chosen list
+  const filteredList = array.filter(filterList);
+  const sortedList = sortList(filteredList);
+  const searchedList = searchList(sortedList);
+  //sending the final list to the display function
+  displayList(searchedList);
 }
 
 function searchList(list) {
+  //first we find the parameter we want to search for
+  //we set both it and the student data to lowercase to make it case insensitive
   const searchTerm = document.querySelector("#search").value.toLowerCase();
+  //we determine the lenght of the list of students to know how many times to run the loop
   let listlength = list.length;
+  //then we make an array to save the search results in
   let searchResult = [];
-
+  //then we check if there is any data in the search parameter
+  //if there is then we use .includes to check through names and hogwarts house one at a time
+  //if the student has a name that matches they are added to the search result array
+  //if the search parameter is empty we return the list without edits
   if (searchTerm !== "") {
-    console.log("searching");
     for (let i = 0; i < listlength; i++) {
       if (list[i].firstName.toLowerCase().includes(searchTerm) === true) {
         searchResult.push(list[i]);
@@ -300,112 +282,106 @@ function searchList(list) {
     }
   } else if (searchTerm === "") {
     searchResult = list;
-    console.log("stop searching");
   }
-
-  // console.log(searchResult);
+  //at the end we return the final search result array
   return searchResult;
 }
 
-//------------------Controller: Open Student Popup
-function openStudentPopup(event) {
-  //we know how to find the name of the student
-  // console.log(event.path[1].firstElementChild.textContent);
-  //now we want to find the corresponding student in the student array
-  let showStudent;
-  studentList.forEach(function (student) {
-    if (student.firstName === event.path[1].firstElementChild.textContent) {
-      showStudent = student;
-    }
-  });
+//------------------Student Popup
+function setTextContentPopup(showStudent) {
+  document.querySelector(".studentCardInfoLine:nth-child(2) p span").textContent = showStudent.firstName;
+  document.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(2) span").textContent = showStudent.middleName;
+  document.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(3) span").textContent = showStudent.lastName;
+  document.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(4) span").textContent = showStudent.nickName;
+  document.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(5) span").textContent = showStudent.bloodstatus;
+}
 
-  //grap the popup
-  const template = document.querySelector(".studentCard-container");
-
-  //change the template
-  //----set text content
-  template.querySelector(".studentCardInfoLine:nth-child(2) p span").textContent = showStudent.firstName;
-  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(2) span").textContent = showStudent.middleName;
-  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(3) span").textContent = showStudent.lastName;
-  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(4) span").textContent = showStudent.nickName;
-  template.querySelector(".studentCardInfoLine:nth-child(2) p:nth-of-type(5) span").textContent = showStudent.bloodstatus;
-
-  //----set student image
-  template.querySelector(".studentCardStudentIMG").src = `imgStudents/${showStudent.image}`;
-
-  //----find the right house crest and border colors
+function setHouseStyling(showStudent) {
   if (showStudent.house === "Gryffindor") {
-    template.querySelector(".studentCardCrest").classList.add("gryfCrest");
-    template.querySelector(".studentCard").classList.add("gryfBorder");
+    document.querySelector(".studentCardCrest").classList.add("gryfCrest");
+    document.querySelector(".studentCard").classList.add("gryfBorder");
     // console.log("GRYFFINDOR");
   } else if (showStudent.house === "Ravenclaw") {
-    template.querySelector(".studentCardCrest").classList.add("raveCrest");
-    template.querySelector(".studentCard").classList.add("raveBorder");
+    document.querySelector(".studentCardCrest").classList.add("raveCrest");
+    document.querySelector(".studentCard").classList.add("raveBorder");
     // console.log("RAVENCLAW");
   } else if (showStudent.house === "Hufflepuff") {
-    template.querySelector(".studentCardCrest").classList.add("huffCrest");
-    template.querySelector(".studentCard").classList.add("huffBorder");
+    document.querySelector(".studentCardCrest").classList.add("huffCrest");
+    document.querySelector(".studentCard").classList.add("huffBorder");
     // console.log("HUFFLEPUFF");
   } else if (showStudent.house === "Slytherin") {
-    template.querySelector(".studentCardCrest").classList.add("slytCrest");
-    template.querySelector(".studentCard").classList.add("slytBorder");
+    document.querySelector(".studentCardCrest").classList.add("slytCrest");
+    document.querySelector(".studentCard").classList.add("slytBorder");
     // console.log("SLYTHERIN");
   }
+}
 
-  //----display if the student is enrolled or not
+function setEnrolmentStatus(showStudent) {
   if (showStudent.expelled === false) {
-    template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is currently enrolled at Hogwarts`;
+    document.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is currently enrolled at Hogwarts`;
     document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "expell student";
     document.querySelector(".studentCardButtons button:nth-of-type(4)").addEventListener("click", expellStudent);
   } else {
-    template.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is not currently enrolled at Hogwarts`;
+    document.querySelector(".studentEnrolment").textContent = `${showStudent.firstName} is not currently enrolled at Hogwarts`;
     document.querySelector(".studentCardButtons button:nth-of-type(4)").textContent = "student is already expelled";
     document.querySelector(".studentCardButtons button:nth-of-type(4)").removeEventListener("click", expellStudent);
   }
+}
 
-  //----show the right icons according to their responsibilities and set the button for adding or removing role
+function setResponsibilityIconsPopup(showStudent) {
   if (showStudent.prefect === true) {
-    template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
+    document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogo");
     document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "remove prefect";
     document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
   } else {
-    template.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
+    document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
     document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "make prefect";
     document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", makePrefect);
   }
   if (showStudent.inquisitorial === true) {
-    template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
+    document.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogo");
     document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "remove from inquisitorial squad";
     document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", removeInquisitorial);
   } else {
-    template.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
+    document.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
     document.querySelector(".studentCardButtons button:nth-of-type(2)").textContent = "make inquisitorial squad";
     document.querySelector(".studentCardButtons button:nth-of-type(2)").addEventListener("click", checkInquisitorial);
   }
   if (showStudent.quidditch === true) {
-    template.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
+    document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogo");
   } else {
-    template.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
+    document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
   }
+}
 
+function openStudentPopup(event) {
+  //we know how to find the name of the student
+  // console.log(event.path[1].firstElementChild.textContent);
+  //now we want to find the corresponding student in the student array
+  let showStudent = findStudent(event.path[1].firstElementChild.textContent);
+
+  //change the content of the popup
+  //----set text content
+  setTextContentPopup(showStudent);
+  //----set student image
+  document.querySelector(".studentCardStudentIMG").src = `imgStudents/${showStudent.image}`;
+  //----find and apply the right house crest and border colors
+  setHouseStyling(showStudent);
+  //----display if the student is enrolled or not
+  setEnrolmentStatus(showStudent);
+  //----show the right icons according to their responsibilities and set the button for adding or removing role
+  setResponsibilityIconsPopup(showStudent);
   //scroll to top and show the popup
   window.scroll(0, 0);
-  template.classList.remove("hidden");
+  document.querySelector(".studentCard-container").classList.remove("hidden");
   //add transparent background
   document.querySelector(".transparentOverlay").classList.remove("hidden");
   document.querySelector("body").classList.add("noScroll");
-  //add eventlisteners
-  //---to close the popup
+  //add eventlistener to close the popup
   document.querySelector(".transparentOverlay").addEventListener("click", closePopup);
-  //---to expell the student
 }
 
-function closePopup() {
-  //reapply the hidden class to remove popup from screen, and remove the noScroll class
-  document.querySelector(".transparentOverlay").classList.add("hidden");
-  document.querySelector(".studentCard-container").classList.add("hidden");
-  document.querySelector("body").classList.remove("noScroll");
-
+function resetPopupVisuals() {
   //reset the template classes to avoid weirdness on future popups
   //--Gryffindor styling
   document.querySelector(".studentCardCrest").classList.remove("gryfCrest");
@@ -428,29 +404,37 @@ function closePopup() {
   document.querySelector(".studentQuidditchLogoSpot").classList.add("quidditchlogobeige");
 }
 
+function closePopup() {
+  //reapply the hidden class to remove popup from screen, and remove the noScroll class
+  document.querySelector(".transparentOverlay").classList.add("hidden");
+  document.querySelector(".studentCard-container").classList.add("hidden");
+  document.querySelector("body").classList.remove("noScroll");
+  resetPopupVisuals();
+}
+
+function findStudent(firstname) {
+  let studentObject;
+  studentList.forEach(function (student) {
+    if (student.firstName === firstname) {
+      studentObject = student;
+    }
+  });
+  return studentObject;
+}
+
 //------------------Model: expelling students
 
 function expellStudent(event) {
-  console.log("Expelled");
-  //finding the student from the clickevent
-  let expelledName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
-  console.log(expelledName);
-  let findExpelled;
-  studentList.forEach(function (student) {
-    if (student.firstName === expelledName) {
-      findExpelled = student;
-    }
-  });
-
-  //finding that student in the array
+  //sending the name to another function to get the full student object
+  const findExpelled = findStudent(event.path[2].querySelector(".studentCardInfoLine p span").textContent);
+  //finding that students index in the array
   const index = studentList.indexOf(findExpelled);
   //setting the student expelled as true
   findExpelled.expelled = true;
+  //styling the open student popup
   document.querySelector(".studentEnrolment").textContent = `${findExpelled.firstName} is not currently enrolled at Hogwarts`;
-  console.log(findExpelled);
   //removing that student from the student list
   studentList.splice(index, 1);
-  // console.table(studentList);
   //adding that student to the expelled student list
   expelledStudentList.push(findExpelled);
   //removing eventlistener and changing button
@@ -464,16 +448,11 @@ function expellStudent(event) {
 //------------------Controller: prefect
 
 function makePrefect(event) {
-  console.log(event);
-  let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  //first we find the name of the student through the event
+  // let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
   //now we want to find the corresponding student and their house in the student array
   //so that we know which prefects to check for
-  let showStudent;
-  studentList.forEach(function (student) {
-    if (student.firstName === prefectName) {
-      showStudent = student;
-    }
-  });
+  let showStudent = findStudent(event.path[2].querySelector(".studentCardInfoLine p span").textContent);
   let studentHouse = showStudent.house;
   //checking how many prefects there are in that house
   //--first filter for house
@@ -485,8 +464,6 @@ function makePrefect(event) {
       return false;
     }
   }
-  console.log(`We want to make ${showStudent.firstName} from ${showStudent.house} a prefect`);
-  console.log(studentsFromHouse);
   //--then filter the prefects within that house
   let prefectsFromHouse = studentsFromHouse.filter(prefectFilter);
   console.log(prefectsFromHouse);
@@ -499,7 +476,6 @@ function makePrefect(event) {
   }
   //--then I check how long the array is before we add the new prefect to make sure there is no more 1
   let amountOfPrefects = prefectsFromHouse.length;
-  console.log(amountOfPrefects);
 
   if (amountOfPrefects < 2) {
     //--if there are less than 2 prefects we can make the student a prefect
@@ -512,6 +488,7 @@ function makePrefect(event) {
     document.querySelector(".studentCardButtons button:nth-of-type(1)").removeEventListener("click", makePrefect);
     document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
   } else {
+    //--if the student can't be a prefect we let the user know with an alert telling them to remove one of the other prefects
     console.log("too many prefects");
     alert(`Too many prefects: ${prefectsFromHouse[0].firstName} ${prefectsFromHouse[0].lastName} and ${prefectsFromHouse[1].firstName} ${prefectsFromHouse[1].lastName} are already prefects, remove one of them to add ${showStudent.firstName}`);
   }
@@ -519,15 +496,10 @@ function makePrefect(event) {
 }
 
 function removePrefect(event) {
-  let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
+  // let prefectName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
   //now we want to find the corresponding student and their house in the student array
   //so that we know which prefects to check for
-  let showStudent;
-  studentList.forEach(function (student) {
-    if (student.firstName === prefectName) {
-      showStudent = student;
-    }
-  });
+  let showStudent = findStudent(event.path[2].querySelector(".studentCardInfoLine p span").textContent);
   showStudent.prefect = false;
   document.querySelector(".studentCardButtons button:nth-of-type(1)").textContent = "make prefect";
   document.querySelector(".studentPrefectLogoSpot").classList.add("prefectlogobeige");
@@ -544,12 +516,7 @@ function checkInquisitorial(event) {
   //find the student name:
   let studentName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
   //then find the corresponding student in the array
-  let inquisitorialStudent;
-  studentList.forEach(function (student) {
-    if (student.firstName === studentName) {
-      inquisitorialStudent = student;
-    }
-  });
+  let inquisitorialStudent = findStudent(studentName);
 
   //then we check if they are a: in Slytherin
   if (inquisitorialStudent.house === "Slytherin") {
@@ -585,12 +552,7 @@ function removeInquisitorial(event) {
   //find the student name:
   let studentName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
   //then find the corresponding student in the array
-  let inquisitorialStudent;
-  studentList.forEach(function (student) {
-    if (student.firstName === studentName) {
-      inquisitorialStudent = student;
-    }
-  });
+  let inquisitorialStudent = findStudent(studentName);
 
   inquisitorialStudent.inquisitorial = false;
   //--then we style the popup
