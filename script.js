@@ -120,6 +120,8 @@ async function hackTheSystem() {
   if (settings.hacked === false) {
     settings.hacked = true;
     console.log("HACK HOGWARTS");
+    //change the header
+    document.querySelector("h1").textContent = "Hacked Hogwarts Student List";
     //then we add me and my friends to the student list
     await addMe();
     await addMyFriends();
@@ -578,7 +580,9 @@ function denyExpellMe() {
   document.querySelector(".modal-container").classList.remove("hidden");
   //style the modal
   document.querySelector(".modal p:nth-of-type(1) span").textContent = "You can't expel me, I've hacked the system";
+  document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = "";
   document.querySelector(".modal p:nth-of-type(2) span").textContent = `I mean, it’s sort of exciting, isn’t it, breaking the rules?`;
+  document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = "";
   document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
   document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
   //set event listeners for closing the modal
@@ -640,7 +644,8 @@ function prefectModal(currentPrefects, student) {
   //show the modal
   document.querySelector(".modal-container").classList.remove("hidden");
   //style the modal
-  document.querySelector(".modal p:nth-of-type(1) span").textContent = "Each house can only have 2 prefects.";
+  document.querySelector(".modal p:nth-of-type(1) span").textContent = student.house;
+  document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = " can only have 2 prefects.";
   document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(1)").textContent = `Remove one of the current prefects to add `;
   document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = student.firstName;
   document.querySelector(".modal button:nth-of-type(1) span:nth-of-type(1)").textContent = `Remove `;
@@ -775,6 +780,7 @@ function denyInquisitorialModal(student) {
   document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(1)").textContent = student.firstName;
   document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = " is not eligable to be part of the inquisitorial squad";
   document.querySelector(".modal p:nth-of-type(2) span").textContent = `Only Slytherins and pureblood students will be accepted.`;
+  document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = "";
   document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
   document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
   //set event listeners for closing the modal
