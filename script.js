@@ -938,6 +938,8 @@ function getImage(lastname, firstname) {
       const imageSrc = `${smallLastName}_${firstLetterOfFirstName}.png`;
       return imageSrc;
     }
+  } else {
+    return "backup.png";
   }
 }
 
