@@ -747,7 +747,8 @@ function makeInquisitorial(student, event) {
   //if it has we want to set a timer to remove the student from the role again
   if (settings.hacked === true) {
     setTimeout(function () {
-      alert("We don't like racists");
+      // alert("We don't like racists");
+      noMoreInquisitorialSquad(student);
       removeInquisitorial(event);
     }, 5000);
   }
@@ -780,6 +781,21 @@ function denyInquisitorialModal(student) {
   document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(1)").textContent = student.firstName;
   document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = " is not eligable to be part of the inquisitorial squad";
   document.querySelector(".modal p:nth-of-type(2) span").textContent = `Only Slytherins and pureblood students will be accepted.`;
+  document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = "";
+  document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
+  document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
+  //set event listeners for closing the modal
+  document.querySelector(".modal img").addEventListener("click", closeModal);
+}
+
+function noMoreInquisitorialSquad(student) {
+  //show the modal
+  document.querySelector(".modal-container").classList.remove("hidden");
+  //style the modal
+  document.querySelector("h2").textContent = "No more racists!";
+  document.querySelector(".modal p:nth-of-type(1) span").textContent = `In protest against the racist regime at Hogwarts, I'm going to remove ${student.firstName} from the Inquisitorial Squad.`;
+  document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = "";
+  document.querySelector(".modal p:nth-of-type(2) span").textContent = `Don't try to add anymore students to the squad..`;
   document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = "";
   document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
   document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
