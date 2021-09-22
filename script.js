@@ -120,8 +120,9 @@ async function hackTheSystem() {
   if (settings.hacked === false) {
     settings.hacked = true;
     console.log("HACK HOGWARTS");
-    //then we add me to the student list
+    //then we add me and my friends to the student list
     await addMe();
+    await addMyFriends();
     //randomize blood
     studentList.forEach(function (student) {
       console.log(`${student.firstName} was originally ${student.bloodstatus}`);
@@ -150,6 +151,39 @@ async function addMe() {
 
   studentList.push(student);
   // buildList();
+}
+
+async function addMyFriends() {
+  const anna = Object.create(Student);
+  anna.firstName = "Anna";
+  anna.lastName = "Kristensen";
+  anna.middleName = "Wolf";
+  anna.nickName = "Flanna";
+  anna.image = "../img/anna.png";
+  anna.house = "Ravenclaw";
+  anna.bloodstatus = "muggleborn";
+
+  const jesper = Object.create(Student);
+  jesper.firstName = "Jesper";
+  jesper.lastName = "Hansen";
+  jesper.middleName = "Mark";
+  jesper.nickName = "Fljesper";
+  jesper.image = "../img/jesper.png";
+  jesper.house = "Slytherin";
+  jesper.bloodstatus = "muggleborn";
+
+  const jo = Object.create(Student);
+  jo.firstName = "María José";
+  jo.lastName = "Herrera Penisi";
+  jo.middleName = "";
+  jo.nickName = "Jo";
+  jo.image = "../img/jo.png";
+  jo.house = "Gryffindor";
+  jo.bloodstatus = "muggleborn";
+
+  studentList.push(anna);
+  studentList.push(jesper);
+  studentList.push(jo);
 }
 
 //------------------filter and sort the list + search
@@ -515,7 +549,8 @@ function expellStudent(event) {
   //sending the name to another function to get the full student object
   const name = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
   if (name === "Rikke") {
-    alert("No way - you can never expel me");
+    // alert("No way - you can never expel me");
+    denyExpellMe();
   } else {
     const findExpelled = findStudent(name);
     //finding that students index in the array
@@ -535,6 +570,19 @@ function expellStudent(event) {
     //rebuilding this student list without the student
     buildList();
   }
+}
+
+function denyExpellMe() {
+  console.log("hehehehe");
+  //show the modal
+  document.querySelector(".modal-container").classList.remove("hidden");
+  //style the modal
+  document.querySelector(".modal p:nth-of-type(1) span").textContent = "You can't expel me, I've hacked the system";
+  document.querySelector(".modal p:nth-of-type(2) span").textContent = `I mean, it’s sort of exciting, isn’t it, breaking the rules?`;
+  document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
+  document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
+  //set event listeners for closing the modal
+  document.querySelector(".modal img").addEventListener("click", closeModal);
 }
 
 //------------------prefects
@@ -590,23 +638,30 @@ function makePrefect(event) {
 
 function prefectModal(currentPrefects, student) {
   //show the modal
-  document.querySelector(".prefectModal-container").classList.remove("hidden");
+  document.querySelector(".modal-container").classList.remove("hidden");
   //style the modal
-  document.querySelector(".prefectModal p:nth-of-type(2) span").textContent = student.firstName;
-  document.querySelector(".prefectModal button:nth-of-type(1) span").textContent = currentPrefects[0].firstName;
-  document.querySelector(".prefectModal button:nth-of-type(2) span").textContent = currentPrefects[1].firstName;
+  document.querySelector(".modal p:nth-of-type(1) span").textContent = "Each house can only have 2 prefects.";
+  document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(1)").textContent = `Remove one of the current prefects to add `;
+  document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = student.firstName;
+  document.querySelector(".modal button:nth-of-type(1) span:nth-of-type(1)").textContent = `Remove `;
+  document.querySelector(".modal button:nth-of-type(2) span:nth-of-type(1)").textContent = `Remove `;
+  document.querySelector(".modal button:nth-of-type(1) span:nth-of-type(2)").textContent = currentPrefects[0].firstName;
+  document.querySelector(".modal button:nth-of-type(2) span:nth-of-type(2)").textContent = currentPrefects[1].firstName;
   //set event listeners for closing the modal and for removing the two other prefects
-  document.querySelector(".prefectModal img").addEventListener("click", closePrefectModal);
-  document.querySelector(".prefectModal button:nth-of-type(1) ").addEventListener("click", removePrefectFromModal);
-  document.querySelector(".prefectModal button:nth-of-type(2) ").addEventListener("click", removePrefectFromModal);
+  document.querySelector(".modal img").addEventListener("click", closeModal);
+  document.querySelector(".modal button:nth-of-type(1) ").addEventListener("click", removePrefectFromModal);
+  document.querySelector(".modal button:nth-of-type(2) ").addEventListener("click", removePrefectFromModal);
 
   console.log(`The current prefects are: ${currentPrefects[0].firstName} ${currentPrefects[0].lastName} and ${currentPrefects[1].firstName} ${currentPrefects[1].lastName}`);
 }
 
-function closePrefectModal() {
+function closeModal() {
   console.log("close modal");
   //hide the modal
-  document.querySelector(".prefectModal-container").classList.add("hidden");
+  document.querySelector(".modal-container").classList.add("hidden");
+  //unhide the buttons in case we need the modal for prefects
+  document.querySelector(".modal button:nth-of-type(1)").classList.remove("hidden");
+  document.querySelector(".modal button:nth-of-type(2)").classList.remove("hidden");
 }
 
 function removePrefect(event) {
@@ -626,8 +681,9 @@ function removePrefect(event) {
 
 function removePrefectFromModal(event) {
   //finding the student name from the button
-  // console.log(event.path[0].children[0].textContent);
-  let removeStudent = findStudent(event.path[0].children[0].textContent);
+  console.log(event);
+  console.log(findStudent(event.path[0].children[1].textContent));
+  let removeStudent = findStudent(event.path[0].children[1].textContent);
   removeStudent.prefect = false;
 
   //styling the student popup:
@@ -639,11 +695,11 @@ function removePrefectFromModal(event) {
   document.querySelector(".studentCardButtons button:nth-of-type(1)").addEventListener("click", removePrefect);
 
   //finding the student that should be added instead
-  // console.log(event.path[2].children[3].children[0].textContent);
-  let newPrefect = findStudent(event.path[2].children[3].children[0].textContent);
+  console.log(event.path[2].children[3].children[1].textContent);
+  let newPrefect = findStudent(event.path[2].children[3].children[1].textContent);
   newPrefect.prefect = true;
   //close the modal
-  closePrefectModal();
+  closeModal();
   //running buildlist to update the role icons
   buildList();
 }
@@ -664,7 +720,8 @@ function checkInquisitorial(event) {
     makeInquisitorial(inquisitorialStudent, event);
   } else {
     //if they are neither we deny their request
-    alert(`${studentName} is not qualified to be part of the inquisitorial squad. Only purebloods and Slytherins are accepted.`);
+    // alert(`${studentName} is not qualified to be part of the inquisitorial squad. Only purebloods and Slytherins are accepted.`);
+    denyInquisitorialModal(inquisitorialStudent);
   }
 }
 
@@ -708,6 +765,20 @@ function removeInquisitorial(event) {
   document.querySelector(".studentCardButtons button:nth-of-type(2)").removeEventListener("click", removeInquisitorial);
   //run buildlist to update with the new icons
   buildList();
+}
+
+function denyInquisitorialModal(student) {
+  console.log(student);
+  //show the modal
+  document.querySelector(".modal-container").classList.remove("hidden");
+  //style the modal
+  document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(1)").textContent = student.firstName;
+  document.querySelector(".modal p:nth-of-type(1) span:nth-of-type(2)").textContent = " is not eligable to be part of the inquisitorial squad";
+  document.querySelector(".modal p:nth-of-type(2) span").textContent = `Only Slytherins and pureblood students will be accepted.`;
+  document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
+  document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
+  //set event listeners for closing the modal
+  document.querySelector(".modal img").addEventListener("click", closeModal);
 }
 
 //------------------Count Students

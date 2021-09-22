@@ -27,6 +27,7 @@ body {
 .container-header {
   background: var(--background-color);
   width: fit-content;
+  width: -moz-fit-content;
   margin: 2em auto;
   box-shadow: var(--box-shadow);
 }
@@ -34,6 +35,7 @@ body {
 h1 {
   padding: 0.3em 1em;
   font-family: var(--typed-font);
+  text-align: center;
 }
 
 .container-infobar {
@@ -313,7 +315,7 @@ input {
 }
 
 /*---------------------Prefect Modal----------------------*/
-.prefectModal-container {
+.modal-container {
   position: absolute;
   margin-top: 5rem;
   height: 100%;
@@ -323,7 +325,7 @@ input {
   align-content: center;
 }
 
-.prefectModal {
+.modal {
   background-color: var(--background-color);
   border: red solid 3px;
   box-shadow: var(--box-shadow);
@@ -333,21 +335,21 @@ input {
   z-index: 3;
 }
 
-.prefectModal h2,
-.prefectModal p:nth-of-type(1),
-.prefectModal p:nth-of-type(2) {
+.modal h2,
+.modal p:nth-of-type(1),
+.modal p:nth-of-type(2) {
   text-align: center;
 }
 
-.prefectModal h2 {
+.modal h2 {
   color: red;
 }
 
-.prefectModal p:nth-of-type(1) {
+.modal p:nth-of-type(1) {
   font-weight: 400;
 }
 
-.prefectModal button {
+.modal button {
   margin-top: 1rem;
   background-color: var(--background-shadow);
   border: var(--background-shadow) solid 0.4rem;
@@ -355,11 +357,11 @@ input {
   font-size: 0.7rem;
 }
 
-.prefectModal button:hover {
+.modal button:hover {
   transform: scale(1.01);
 }
 
-.prefectModal div {
+.modal div {
   display: flex;
   flex-direction: column;
 }
@@ -368,6 +370,17 @@ input {
   height: 1.5rem;
   position: absolute;
   transform: translate(25rem, -0.9rem);
+  cursor: pointer;
+}
+.modal img:hover {
+  height: 1.5rem;
+  position: absolute;
+  transform: translate(25rem, -0.9rem) scale(1.02) rotate(0.5deg);
+  cursor: pointer;
+}
+
+button span {
+  pointer-events: none;
 }
 
 /*----------------------Candles-----------------------*/
