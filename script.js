@@ -585,6 +585,7 @@ function denyExpellMe() {
   document.querySelector(".modal p:nth-of-type(2) span:nth-of-type(2)").textContent = "";
   document.querySelector(".modal button:nth-of-type(1)").classList.add("hidden");
   document.querySelector(".modal button:nth-of-type(2)").classList.add("hidden");
+  document.querySelector("h2").textContent = "REQUEST DENIED, lol";
   //set event listeners for closing the modal
   document.querySelector(".modal img").addEventListener("click", closeModal);
 }
@@ -667,6 +668,8 @@ function closeModal() {
   //unhide the buttons in case we need the modal for prefects
   document.querySelector(".modal button:nth-of-type(1)").classList.remove("hidden");
   document.querySelector(".modal button:nth-of-type(2)").classList.remove("hidden");
+  //reset the header to it's standard text (in case it's been used for the hacked inquisitorial removal)
+  document.querySelector("h2").textContent = "REQUEST DENIED";
 }
 
 function removePrefect(event) {
