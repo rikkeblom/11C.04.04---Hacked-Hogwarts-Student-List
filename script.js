@@ -752,19 +752,14 @@ function makeInquisitorial(student, event) {
     setTimeout(function () {
       // alert("We don't like racists");
       noMoreInquisitorialSquad(student);
-      removeInquisitorial(event);
+      removeInquisitorial(student);
     }, 5000);
   }
 }
 
-function removeInquisitorial(event) {
+function removeInquisitorial(student) {
   console.log("remove this racist");
-  //find the student name:
-  let studentName = event.path[2].querySelector(".studentCardInfoLine p span").textContent;
-  //then find the corresponding student in the array
-  let inquisitorialStudent = findStudent(studentName);
-
-  inquisitorialStudent.inquisitorial = false;
+  student.inquisitorial = false;
   //--then we style the popup
   document.querySelector(".studentInquisitorialLogoSpot").classList.add("inquisitoriallogobeige");
   document.querySelector(".studentInquisitorialLogoSpot").classList.remove("inquisitoriallogo");
