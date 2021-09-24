@@ -368,14 +368,13 @@ input {
 
 .closeModal {
   height: 1.5rem;
-  position: absolute;
-  transform: translate(25rem, -0.9rem);
+  float: right;
+  margin: -10px -10px 0 0;
   cursor: pointer;
 }
 .modal img:hover {
   height: 1.5rem;
-  position: absolute;
-  transform: translate(25rem, -0.9rem) scale(1.02) rotate(0.5deg);
+  transform: translate(1px, -1px);
   cursor: pointer;
 }
 
